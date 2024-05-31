@@ -1,12 +1,12 @@
 <template>
-  <div class="wrapper mt-10 p-10">
-    <div class="movie-title my-4 text-3xl font-semibold text-white">
+  <div class="wrapper mt-7 p-7">
+    <div class="movie-title my-6 text-3xl font-semibold text-white">
       {{ categoryTitle }}
     </div>
     <swiper
       :modules="modules"
       :slides-per-view="6"
-      :space-between="40"
+      :space-between="50"
       navigation
       :pagination="{ clickable: true }"
       :scrollbar="{ draggable: true }"
@@ -14,7 +14,7 @@
       class="mySwiper-slide"
     >
       <swiper-slide v-for="movie in movies" :key="movie.id">
-        <movie-list :image="movie.poster_path"></movie-list>
+        <movie-list :id="movie.id" :image="movie.poster_path"></movie-list>
       </swiper-slide>
     </swiper>
   </div>
@@ -43,22 +43,22 @@ export default {
         breakpoints: {
           500: {
             slidesPerView: 3,
-            slidesPerGroup: 3
+            slidesPerGroup: 2,
           },
           800: {
             slidesPerView: 4,
-            slidesPerGroup: 4
+            slidesPerGroup: 3,
           },
           1100: {
             slidesPerView: 5,
-            slidesPerGroup: 5
+            slidesPerGroup: 4,
           },
           1400: {
             slidesPerView: 6,
-            slidesPerGroup: 6
-          }
-        }
-      }
+            slidesPerGroup: 5,
+          },
+        },
+      },
     };
   },
   components: {
@@ -83,3 +83,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* .swiper {
+  z-index: 0 !important;
+} */
+</style>

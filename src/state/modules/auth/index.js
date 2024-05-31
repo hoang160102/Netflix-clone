@@ -1,6 +1,6 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 export const authComputed = {
-    ...mapState('auth/auth', ['user'])
+    ...mapState('auth/auth', ['user', 'fullInfoUser'])
 }
 
 export const authMethods = {

@@ -20,15 +20,24 @@ const db = getFirestore(app);
 
 export const state = {
   user: null,
+  fullInfoUser: null,
+  token: null
 };
 
 export const mutations = {
   userLoggedIn(state, data) {
     state.user = data;
   },
-  logoutUser() {
+  logoutUser(state) {
     state.user = null
-  }
+  },
+  infoCurrentUser(state, data) {
+    state.fullInfoUser = data
+  },
+  // setToken(state, data) {
+  //   state.token = data
+  //   localStorage.setItem('token', data);
+  // }
 };
 
 export const actions = {
@@ -42,6 +51,7 @@ export const actions = {
           email: newUser.email,
           password: newUser.password,
           id: result.user.uid,
+          userList: []
         });
         setTimeout(() => {
           router.push({ name: "Login" });
@@ -53,10 +63,16 @@ export const actions = {
         }
       });
   },
-  async login(_, user) {
+  async login({commit}, user) {
     await signInWithEmailAndPassword(auth, user.email, user.password)
       .then(() => {
         toast.success("Login Successfully");
+        // console.log(auth.currentUser.accessToken)
+        // commit(auth.currentUser.accessToken)
+        commit("userLoggedIn", {
+          email: user.email,
+          password: user.password
+        });
         setTimeout(() => {
           router.push({ name: "Home" });
         }, 1500);
@@ -69,7 +85,6 @@ export const actions = {
     const usersCol = collection(db, "users");
     const userSnapshot = await getDocs(usersCol);
     try {
-      const auth = getAuth();
       const currentId = auth.currentUser.uid;
       const getUser = userSnapshot.docs.filter((doc) => {
         return doc.id === currentId;
@@ -80,9 +95,9 @@ export const actions = {
         lastName: getUser[0].data().lastName,
         email: getUser[0].data().email,
         password: getUser[0].data().password,
+        userList: getUser[0].data().userList
       };
-      console.log(currentUser);
-      commit("userLoggedIn", currentUser);
+      await commit("infoCurrentUser", currentUser);
     } catch (err) {
       return err;
     }
@@ -92,7 +107,14 @@ export const actions = {
       commit('logoutUser')
       router.push({name: 'Login'})
     })
-  }
+  },
+  // initializeStore({ commit }) {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     commit('setToken', token);
+  //     // Optionally, fetch user data with the token and commit setUser
+  //   }
+  // }
 };
 
 export const getters = {
@@ -100,3 +122,4 @@ export const getters = {
     return !!state.user
   }
 }
+

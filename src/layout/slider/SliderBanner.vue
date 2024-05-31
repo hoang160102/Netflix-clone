@@ -11,7 +11,7 @@
     :modules="modules"
     class="mySwiper-banner w-full"
   >
-    <swiper-slide v-for="movie in movieBanner" :key="movie.id">
+    <swiper-slide class="relative" v-for="movie in movieBanner" :key="movie.id">
       <slide-movie
         :id="movie.id"
         :image="movie.backdrop_path"
@@ -69,17 +69,8 @@ export default {
 }
 
 .swiper-slide {
-  position: relative;
   font-size: 18px;
-  background: #fff;
   width: 100%;
   height: 100%;
-}
-
-.swiper-pagination-bullet {
-  background-color: #fff!important;
-  width: 40px !important;
-  border-radius: 3px !important;
-  height: 5px !important;
 }
 </style>

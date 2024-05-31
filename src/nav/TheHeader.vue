@@ -56,8 +56,7 @@
         >
           <div class="user ml-4">
             <div class="info bg-slate-500 relative p-2 text-white">HV</div>
-            <div class="subnav p-4 bg-slate-800 absolute"
-            :style="display">
+            <div class="subnav p-4 bg-slate-800 absolute" :style="display">
               <div
                 class="edit-profile text-white font-extralight text-slate-400 font-sm flex"
               >
@@ -93,6 +92,7 @@ import { mdiAccountBoxEditOutline } from "@mdi/js";
 import { mdiLogout } from "@mdi/js";
 import { auth } from "@/state/helpers";
 export default {
+  props: ["email"],
   data() {
     return {
       pathSearch: mdiMagnify,
@@ -102,7 +102,7 @@ export default {
       r: "0deg",
       width: "0px",
       border: "none",
-      displaySubnav: "none"
+      displaySubnav: "none",
     };
   },
   components: {
@@ -124,9 +124,9 @@ export default {
     },
     display() {
       return {
-        display: this.displaySubnav
-      }
-    }
+        display: this.displaySubnav,
+      };
+    },
   },
   methods: {
     ...auth.authMethods,
@@ -145,23 +145,22 @@ export default {
     },
     iconRotate() {
       this.r = "180deg";
-      this.displaySubnav = "block"
+      this.displaySubnav = "block";
     },
     iconReRotate() {
       this.r = "0deg";
-      this.displaySubnav = "none"
+      this.displaySubnav = "none";
     },
     signOut() {
-      this.logout()
-    }
+      this.logout();
+    },
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
   },
-  async created() {
-    await this.getCurrentUser()
-    console.log(this.$store.getters['auth/auth/isLoggedIn'])
-  }
+  created() {
+    // console.log(this.email)
+  },
 };
 </script>
 
@@ -210,7 +209,7 @@ header {
 }
 
 .search-input {
-  transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease;
 }
 
 .menu-icon {
@@ -221,5 +220,10 @@ header {
 .subnav {
   width: 200px;
   right: 20px;
+}
+
+.nav-tab .router-link-active {
+  color: #fff;
+  font-weight: 600;
 }
 </style>

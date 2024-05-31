@@ -1,10 +1,16 @@
 import axios from "axios";
+import app from "@/firebase/firebase";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, updateDoc, arrayUnion } from "firebase/firestore";
+const auth = getAuth(app)
+const db = getFirestore(app);
 
 const API_KEY = "?api_key=716fe319d36f1baebdeb59c8e3156dc5";
 export const state = {
   movieList: [],
   movieBanner: [],
   genres: [],
+  userMovie: [],
   movieSlide: null
 };
 
@@ -21,6 +27,9 @@ export const mutations = {
   },
   fetchMovieSlide(state, data) {
     state.movieSlide = data
+  },
+  fetchMovieUser(state, data) {
+    state.userMovie = data
   }
 };
 
@@ -41,5 +50,15 @@ export const actions = {
   async getMovieSlide({commit}, url) {
     const result = await axios.get(`https://api.themoviedb.org/3${url}${API_KEY}`)
     commit('fetchMovieSlide', result.data.results)
+  },
+  async addMovieToList(_, movieId) {
+    const userListRef = doc(db, "users", auth.currentUser.uid)
+    await updateDoc(userListRef, {
+      userList: arrayUnion(movieId)
+    })
+  },
+  async getMovieById({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/${id}${API_KEY}`)
+    commit('fetchMovieUser', result.data.results)
   }
 };

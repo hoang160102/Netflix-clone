@@ -5,9 +5,7 @@
 </template>
 
 <script>
-export default {
-  
-}
+
 </script>
 
 <style>
@@ -66,6 +64,14 @@ main {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+/* .film {
+  pointer-events: auto;
+}
+
+.swiper:has(.film:hover) {
+  z-index: 10; */
+/* } */
 
 /* html {
     overflow-x: hidden;

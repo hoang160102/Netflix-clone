@@ -8,8 +8,6 @@ import StartNow from "./pages/StartNow.vue";
 import RegiserAccount from "./pages/RegisterAccount.vue";
 import LoginAccount from "./pages/LoginAccount.vue";
 // import store from "./state/store";
-import app from "./firebase/firebase";
-import { getAuth } from "firebase/auth";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,19 +46,19 @@ const router = createRouter({
       path: "/start-now",
       name: "StartNow",
       component: StartNow,
-      meta: { title: "Start" },
+      meta: { title: "Start", requiresAuth: false },
     },
     {
       path: "/register",
       component: RegiserAccount,
       name: "Register",
-      meta: { title: "Register" },
+      meta: { title: "Register", requiresAuth: false },
     },
     {
       path: "/login",
       component: LoginAccount,
       name: "Login",
-      meta: { title: "Login" },
+      meta: { title: "Login", requiresAuth: false },
     },
   ],
   scrollBehavior(to, from, savedPos) {
@@ -72,26 +70,13 @@ const router = createRouter({
 });
 router.beforeEach((to, _, next) => {
   document.title = `${to.meta.title} | Netflix`;
-  next();
-  const auth = getAuth(app)
-  const current = auth.currentUser
-  // const loggedIn = store.getters["auth/auth/isLoggedIn"];
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  if (requiresAuth && !current) next({name: 'StartNow'});
-  else if (!requiresAuth && current) next({name: 'Home'});
-  else next();
-  // if (to.matched.some((record) => record.meta.requiresAuth)) {
-  //   if (!loggedIn) {
-  //     next({
-  //       path: "/start-now",
-  //       // Save the intended route to redirect after login
-  //     });
-  //   } else {
-  //     next();
-  //   }
-  // } else {
-  //   next();
-  // }
+  // let loggedIn = store.getters["auth/auth/isLoggedIn"];
+  // console.log(loggedIn)
+  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  // if (requiresAuth && !loggedIn) router.push({name: 'StartNow'});
+  // else if (!requiresAuth && loggedIn) next({name: 'Home'});
+  // else next();
+  next()
 });
 
 export default router;

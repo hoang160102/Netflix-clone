@@ -1,10 +1,10 @@
 <template>
   <div class="w-full movie-img">
     <img :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
-    <div class="left-back"></div>
-    <div class="movie-wrapper"></div>
+    <div class="left-back h-full w-1/2 absolute top-0 left-0"></div>
+    <div class="movie-wrapper w-full absolute left-0 top-0"></div>
   </div>
-  <div class="info-movie">
+  <div class="info-movie w-full left-14 top-2/4 absolute">
     <div class="title-movie text-white text-5xl font-bold">
       {{ title }}
     </div>
@@ -22,10 +22,24 @@
     <div class="genres text-gray-400 my-4">
       Genres: <span class="text-white">{{ getGenre }}</span>
     </div>
-    <button class="text-white flex align-center justify-center py-2 px-5">
-      <svg-icon type="mdi" :path="path"></svg-icon>
-      <span class="ml-2">My List</span>
-    </button>
+    <div class="flex">
+      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+        <svg-icon type="mdi" :path="pathTeaser"></svg-icon>
+        <span class="ml-2">Teaser</span>
+      </router-link>
+      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+        <svg-icon type="mdi" :path="pathPlay"></svg-icon>
+        <span class="ml-2">Play</span>
+      </router-link>
+      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+        <svg-icon type="mdi" :path="pathInfo"></svg-icon>
+        <span class="ml-2">Info</span>
+      </router-link>
+      <button @click="addMovie" class="text-white flex items-center justify-center py-2 px-4">
+        <svg-icon type="mdi" :path="pathPlus"></svg-icon>
+        <span>My List</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -33,6 +47,9 @@
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiPlus } from "@mdi/js";
 import { movies } from "@/state/helpers";
+import { mdiInformationOutline } from '@mdi/js';
+import { mdiVideoOutline } from "@mdi/js";
+import { mdiPlay } from '@mdi/js';
 export default {
   props: ["id", "image", "title", "rate", "desc", "release", "genre"],
   components: {
@@ -40,7 +57,10 @@ export default {
   },
   data() {
     return {
-      path: mdiPlus,
+      pathPlus: mdiPlus,
+      pathInfo: mdiInformationOutline,
+      pathTeaser: mdiVideoOutline,
+      pathPlay: mdiPlay,
     };
   },
   computed: {
@@ -67,6 +87,12 @@ export default {
         .join(", ");
     },
   },
+  methods: {
+    ...movies.moviesMethods,
+    addMovie() {
+      this.addMovieToList(this.id)
+    }
+  }
 };
 </script>
 
@@ -79,36 +105,32 @@ img {
 }
 
 .left-back {
-  height: 100%;
-  width: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
   background: linear-gradient(90deg, #000 50%, transparent);
   display: block;
 }
 
 .movie-wrapper {
   height: 80vh;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   background-color: rgb(0, 0, 0, 0.5);
   display: none;
 }
 
 .info-movie {
-  width: 100%;
-  position: absolute;
-  top: 50%;
-  left: 50px;
   transform: translateY(-50%);
 }
 
 button {
   border: 1px solid #fff;
   border-radius: 5px;
+}
+
+.info {
+  background-color: rgba(109, 109, 110, 0.7);
+  border-radius: 5px;
+}
+
+.info:hover {
+  background-color: rgba(109, 109, 110, 0.4);
 }
 
 @media screen and (max-width: 1200px) {

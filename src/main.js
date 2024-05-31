@@ -3,11 +3,10 @@ import App from "./App.vue";
 import router from "./router";
 import "./input.css";
 import store from "./state/store";
-import MainContent from "./layout/MainContent.vue";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
+import MainContent from "./layout/MainContent.vue";
 let app
 const options = {
   position: "top-right",
@@ -30,7 +29,7 @@ onAuthStateChanged(auth, () => {
     app.use(router);
     app.use(store);
     app.use(Toast, options);
-    app.component("main-content", MainContent);
+    app.component('main-content', MainContent)
     app.mount("#app");
   }
 })
