@@ -120,6 +120,6 @@ export const actions = {
 export const getters = {
   isLoggedIn(state) {
     return !!state.user
-  }
+  },
 }
 

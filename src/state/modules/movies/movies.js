@@ -1,7 +1,7 @@
 import axios from "axios";
 import app from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getFirestore, doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 const auth = getAuth(app)
 const db = getFirestore(app);
 
@@ -10,7 +10,9 @@ export const state = {
   movieList: [],
   movieBanner: [],
   genres: [],
-  userMovie: [],
+  filmDetail: [],
+  bannerMoviePage: [],
+  allMovies: [],
   movieSlide: null
 };
 
@@ -19,6 +21,9 @@ export const mutations = {
   //     state.movieList = data;
   //     console.log(state.movieList)
   //   },
+  fetchAllMovies(state, data) {
+    state.allMovies = data
+  },
   fetchMovieBanner(state, data) {
     state.movieBanner = data;
   },
@@ -28,8 +33,11 @@ export const mutations = {
   fetchMovieSlide(state, data) {
     state.movieSlide = data
   },
-  fetchMovieUser(state, data) {
-    state.userMovie = data
+  fetchFilmDetail(state, data) {
+    state.filmDetail = data
+  },
+  fetchBannerMoviePage(state, data) {
+    state.bannerMoviePage = data
   }
 };
 
@@ -41,6 +49,13 @@ export const actions = {
     const data = result.data.results.splice(0, 10);
     commit("fetchMovieBanner", data);
   },
+  async getAllMovies({ commit }) {
+    const result = await axios.get(
+      "https://api.themoviedb.org/3/discover/movie" + API_KEY
+    );
+    const data = result.data.results;
+    commit("fetchAllMovies", data);
+  },
   async getAllGerne( { commit }) {
     const result = await axios.get(
       "https://api.themoviedb.org/3/genre/movie/list" + API_KEY
@@ -51,14 +66,28 @@ export const actions = {
     const result = await axios.get(`https://api.themoviedb.org/3${url}${API_KEY}`)
     commit('fetchMovieSlide', result.data.results)
   },
-  async addMovieToList(_, movieId) {
+  async addMovieToList(_, movie) {
     const userListRef = doc(db, "users", auth.currentUser.uid)
     await updateDoc(userListRef, {
-      userList: arrayUnion(movieId)
+      userList: arrayUnion(movie)
+    })
+  },
+  async removeMovieFromList(_, movie) {
+    const userListRef = doc(db, "users", auth.currentUser.uid)
+    await updateDoc(userListRef, {
+      userList: arrayRemove(movie)
     })
   },
   async getMovieById({commit}, id) {
-    const result = await axios.get(`https://api.themoviedb.org/3/${id}${API_KEY}`)
-    commit('fetchMovieUser', result.data.results)
+    const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}${API_KEY}`)
+    commit('fetchFilmDetail', result.data)
+  },
+  async getTvShowById({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/tv/${id}${API_KEY}`)
+    commit('fetchFilmDetail', result.data)
+  },
+  async getBannerMoviePage({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/trending/movie/day${API_KEY}`)
+    commit("fetchBannerMoviePage", result.data.results.splice(0, 10))
   }
 };

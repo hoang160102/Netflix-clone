@@ -17,9 +17,10 @@
         :image="movie.backdrop_path"
         :title="movie.title"
         :rate="movie.vote_average"
-        :desc="movie.overview"
+        :overview="movie.overview"
         :release="movie.release_date"
         :genre="movie.genre_ids"
+        type="movie"
       ></slide-movie>
     </swiper-slide>
   </swiper>

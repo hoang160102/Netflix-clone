@@ -1,6 +1,6 @@
 <template>
   <div class="film relative">
-    <div class="film-box absolute left-0 top-0">
+    <div class="film-box">
       <img
         class="w-full"
         :src="`https://image.tmdb.org/t/p/original${image}`"
@@ -27,9 +27,18 @@
           </div>
           <span>Play</span>
         </div>
-        <div class="function mb-3 text-white flex items-center">
+        <div
+          v-if="!isMovieInList"
+          class="function mb-3 text-white flex items-center"
+        >
           <div @click="addMovie" class="circle p-2 mr-3">
             <svg-icon type="mdi" :path="pathPlus"> </svg-icon>
+          </div>
+          <span>My List</span>
+        </div>
+        <div v-else class="function mb-3 text-white flex items-center">
+          <div @click="removeMovie" class="circle p-2 mr-3">
+            <svg-icon type="mdi" :path="pathMinus"> </svg-icon>
           </div>
           <span>My List</span>
         </div>
@@ -41,12 +50,14 @@
 <script>
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiVideoOutline } from "@mdi/js";
-import { mdiPlay } from '@mdi/js';
+import { mdiPlay } from "@mdi/js";
 import { mdiPlus } from "@mdi/js";
-import { mdiInformationVariant } from '@mdi/js';
+import { mdiMinus } from "@mdi/js";
+import { mdiInformationVariant } from "@mdi/js";
 import { movies } from "@/state/helpers";
+import { auth } from "@/state/helpers";
 export default {
-  props: ['image', 'id'],
+  props: ["image", "id", "type"],
   components: {
     SvgIcon,
   },
@@ -55,35 +66,65 @@ export default {
       pathTeaser: mdiVideoOutline,
       pathPlay: mdiPlay,
       pathPlus: mdiPlus,
-      pathInfo: mdiInformationVariant
+      pathInfo: mdiInformationVariant,
+      pathMinus: mdiMinus,
+      list: [],
     };
   },
   computed: {
-    ...movies.moviesComputed
+    ...movies.moviesComputed,
+    ...auth.authComputed,
+    isMovieInList() {
+      const movie = this.list.some((film) => {
+        return this.id === film.id;
+      });
+      return movie;
+    },
   },
   methods: {
     ...movies.moviesMethods,
-    addMovie() {
-      this.addMovieToList(this.id)
-    }
-  }
+    ...auth.authMethods,
+    async callFilmDetail() {
+      if (this.type === "movie") {
+        await this.getMovieById(this.id);
+      } else {
+        await this.getTvShowById(this.id);
+      }
+    },
+    async addMovie() {
+      await this.callFilmDetail();
+      await this.addMovieToList(this.filmDetail);
+      this.initial();
+      this.isMovieInList;
+    },
+    async removeMovie() {
+      const movie = await this.list.find((film) => {
+        return this.id === film.id;
+      });
+      await this.removeMovieFromList(movie);
+      this.initial();
+      this.isMovieInList;
+    },
+    async initial() {
+      await this.getCurrentUser();
+      this.list = this.fullInfoUser.userList;
+    },
+  },
+  async created() {
+    this.initial();
+  },
 };
 </script>
 
 <style scoped>
 .film {
-  height: 300px;
+  max-height: 320px;
   transition: all 0.5s ease;
 }
 
-.film-box {
-  max-height: 300px;
-  border-radius: 10px;
-}
-
 img {
-  max-height: 300px;
   border-radius: 10px;
+  max-height: 320px;
 }
 
 .film:hover {
@@ -92,8 +133,9 @@ img {
 
 .cover {
   background: rgba(0, 0, 0, 0.7);
-  height: 300px;
+  height: 100%;
   width: 100%;
+  border-radius: 10px;
   display: none;
 }
 
@@ -102,13 +144,13 @@ img {
 }
 
 .circle {
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    cursor: pointer;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .video-func {
-    transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
 }
 
 /* .film:hover > .film-box {

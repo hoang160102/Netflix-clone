@@ -1,6 +1,6 @@
 <template>
   <the-header></the-header>
-  <div class="layout">
+  <div class="min-h-screen layout">
       <slot></slot>
     </div>
 </template>

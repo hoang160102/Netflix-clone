@@ -17,26 +17,47 @@
       </div>
     </div>
     <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
-      {{ desc }}
+      {{ overview }}
     </div>
     <div class="genres text-gray-400 my-4">
       Genres: <span class="text-white">{{ getGenre }}</span>
     </div>
     <div class="flex">
-      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+      <router-link
+        to="/"
+        class="info mr-4 text-white flex items-center justify-center py-2 px-5"
+      >
         <svg-icon type="mdi" :path="pathTeaser"></svg-icon>
         <span class="ml-2">Teaser</span>
       </router-link>
-      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+      <router-link
+        to="/"
+        class="info mr-4 text-white flex items-center justify-center py-2 px-5"
+      >
         <svg-icon type="mdi" :path="pathPlay"></svg-icon>
         <span class="ml-2">Play</span>
       </router-link>
-      <router-link to="/" class="info mr-4 text-white flex items-center justify-center py-2 px-5">
+      <router-link
+        to="/"
+        class="info mr-4 text-white flex items-center justify-center py-2 px-5"
+      >
         <svg-icon type="mdi" :path="pathInfo"></svg-icon>
         <span class="ml-2">Info</span>
       </router-link>
-      <button @click="addMovie" class="text-white flex items-center justify-center py-2 px-4">
+      <button
+        v-if="!isMovieInList"
+        @click="addMovie"
+        class="text-white add flex items-center justify-center py-2 px-4"
+      >
         <svg-icon type="mdi" :path="pathPlus"></svg-icon>
+        <span>My List</span>
+      </button>
+      <button
+        v-else
+        @click="removeMovie"
+        class="text-white remove flex items-center justify-center py-2 px-4"
+      >
+        <svg-icon type="mdi" :path="pathMinus"></svg-icon>
         <span>My List</span>
       </button>
     </div>
@@ -46,12 +67,23 @@
 <script>
 import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiPlus } from "@mdi/js";
+import { mdiMinus } from "@mdi/js";
 import { movies } from "@/state/helpers";
-import { mdiInformationOutline } from '@mdi/js';
+import { auth } from "@/state/helpers";
+import { mdiInformationOutline } from "@mdi/js";
 import { mdiVideoOutline } from "@mdi/js";
-import { mdiPlay } from '@mdi/js';
+import { mdiPlay } from "@mdi/js";
 export default {
-  props: ["id", "image", "title", "rate", "desc", "release", "genre"],
+  props: [
+    "id",
+    "image",
+    "title",
+    "rate",
+    "overview",
+    "release",
+    "genre",
+    "type",
+  ],
   components: {
     SvgIcon,
   },
@@ -61,10 +93,13 @@ export default {
       pathInfo: mdiInformationOutline,
       pathTeaser: mdiVideoOutline,
       pathPlay: mdiPlay,
+      pathMinus: mdiMinus,
+      list: [],
     };
   },
   computed: {
     ...movies.moviesComputed,
+    ...auth.authComputed,
     movieRate() {
       return (this.rate * 10).toFixed(2);
     },
@@ -86,13 +121,45 @@ export default {
         .filter((name) => name !== null)
         .join(", ");
     },
+    isMovieInList() {
+      const movie = this.list.some((film) => {
+        return this.id === film.id;
+      });
+      return movie;
+    },
   },
   methods: {
     ...movies.moviesMethods,
-    addMovie() {
-      this.addMovieToList(this.id)
-    }
-  }
+    ...auth.authMethods,
+    async callFilmDetail() {
+      if (this.type === "movie") {
+        await this.getMovieById(this.id);
+      } else {
+        await this.getTvShowById(this.id);
+      }
+    },
+    async addMovie() {
+      await this.callFilmDetail();
+      await this.addMovieToList(this.filmDetail);
+      this.inital()
+      this.isMovieInList;
+    },
+    async removeMovie() {
+      const movie = await this.list.find((film) => {
+        return this.id === film.id;
+      });
+      await this.removeMovieFromList(movie);
+      this.inital()
+      this.isMovieInList;
+    },
+    async inital() {
+      await this.getCurrentUser();
+      this.list = this.fullInfoUser.userList;
+    },
+  },
+  async created() {
+    await this.inital()
+  },
 };
 </script>
 

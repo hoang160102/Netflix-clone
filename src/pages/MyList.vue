@@ -2,8 +2,14 @@
   <main-content>
     <div class="px-10 py-5">
       <h1 class="text-white text-4xl font-light">My List</h1>
-      <div class="list-film" v-for="id in list" :key="id">
-        <film-card :id="id"></film-card>
+      <div class="list-film my-6 flex flex-wrap">
+        <film-card
+          v-for="film in list"
+          :key="film.id"
+          :id="film.id"
+          :type="film.type"
+          :image="film.poster_path"
+        ></film-card>
       </div>
     </div>
   </main-content>
@@ -17,7 +23,7 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
     };
   },
   computed: {
@@ -31,7 +37,6 @@ export default {
   },
   async created() {
     await this.initial();
-    console.log(this.fullInfoUser.userList)
     this.list = this.fullInfoUser.userList;
   },
 };

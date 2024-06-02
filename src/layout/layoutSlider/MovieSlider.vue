@@ -14,7 +14,7 @@
       class="mySwiper-slide"
     >
       <swiper-slide v-for="movie in movies" :key="movie.id">
-        <movie-list :id="movie.id" :image="movie.poster_path"></movie-list>
+        <movie-list :id="movie.id" :image="movie.poster_path" :type="type"></movie-list>
       </swiper-slide>
     </swiper>
   </div>
@@ -35,7 +35,7 @@ import "swiper/css/scrollbar";
 
 // Import Swiper styles
 export default {
-  props: ["category-title", "request-url"],
+  props: ["category-title", "request-url", "media-type"],
   data() {
     return {
       movies: [],
@@ -73,6 +73,9 @@ export default {
   },
   computed: {
     ...movies.moviesComputed,
+    type() {
+      return this.mediaType
+    }
   },
   methods: {
     ...movies.moviesMethods,
