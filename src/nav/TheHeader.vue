@@ -15,7 +15,7 @@
             <router-link :to="{ name: 'Movie' }">Movies</router-link>
           </li>
           <li class="nav-tab">
-            <router-link :to="{ name: 'PopularMovie' }">Popular</router-link>
+            <router-link :to="{ name: 'PopularFilm' }">Popular</router-link>
           </li>
           <li class="nav-tab">
             <router-link :to="{ name: 'TVShows' }">TV Shows</router-link>

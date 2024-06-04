@@ -7,7 +7,9 @@ export const moviesComputed = {
     "movieSlide",
     "filmDetail",
     "bannerMoviePage",
-    "allMovies"
+    "allMovies",
+    "popularMovies",
+    "popularTvShows"
   ]),
 };
 export const moviesMethods = {
@@ -21,5 +23,7 @@ export const moviesMethods = {
     "getMovieById",
     "getTvShowById",
     "getBannerMoviePage",
+    "getPopularMovies",
+    "getPopularTvShows"
   ]),
 };

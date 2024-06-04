@@ -32,6 +32,7 @@
     <div class="genre-movie"></div>
     <div class="slider-genre" v-for="kind in genres" :key="kind.id">
       <h1>{{ kind.name }}</h1>
+      <h1>{}</h1>
     </div>
   </main-content>
 </template>
@@ -72,17 +73,22 @@ export default {
   },
   methods: {
     ...movies.moviesMethods,
-    // async filterMovie() {
-    //   const getFilms = await this.allGenres.filter((genre) => {
-    //     return 
-    //   });
-    // },
+    async filterMovie() {
+      const films = this.allFilms.filter(film => {
+        return film.genre_ids.every((id) => {
+          return this.allGenres.forEach((genre) => {
+            return id === genre.id
+          })
+        })
+      })
+      console.log(films)
+    },
     async initial() {
       await this.getBannerMoviePage();
       await this.getAllGerne();
       await this.getAllMovies();
-      this.genres = this.allGenres;
-      this.allMovies = this.allFilms;
+      this.allGenres = this.genres;
+      this.allFilms = this.allMovies;
     },
   },
   async created() {

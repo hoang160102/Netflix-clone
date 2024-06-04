@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./pages/HomePage.vue";
 import MoviePage from "./pages/MoviePage.vue";
-import PopularMovie from "./pages/PopularMovie.vue";
+import PopularFilm from "./pages/PopularFilm.vue"
 import TelvisionShows from "./pages/TelvisionShows.vue";
 import MyList from "./pages/MyList.vue";
 import StartNow from "./pages/StartNow.vue";
 import RegiserAccount from "./pages/RegisterAccount.vue";
 import LoginAccount from "./pages/LoginAccount.vue";
+import MovieInformation from "./pages/information/MovieInformation.vue";
+import TvshowInformation from './pages/information/TvshowInofmation.vue'
 // import store from "./state/store";
 
 const router = createRouter({
@@ -26,8 +28,8 @@ const router = createRouter({
     },
     {
       path: "/popular",
-      name: "PopularMovie",
-      component: PopularMovie,
+      name: "PopularFilm",
+      component: PopularFilm,
       meta: { title: "Popular", requiresAuth: true },
     },
     {
@@ -59,6 +61,18 @@ const router = createRouter({
       component: LoginAccount,
       name: "Login",
       meta: { title: "Login", requiresAuth: false },
+    },
+    {
+      path: "/movie/:movieId",
+      component: MovieInformation,
+      name: "MovieDetail",
+      meta: { title: "Movie Detail", requiresAuth: true}
+    },
+    {
+      path: "/tv-show/:tvshowId",
+      component: TvshowInformation,
+      name: "TvShowDetail",
+      meta: { title: "TV Show Detail", requiresAuth: true}
     },
   ],
   scrollBehavior(to, from, savedPos) {

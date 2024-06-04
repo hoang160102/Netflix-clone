@@ -13,6 +13,8 @@ export const state = {
   filmDetail: [],
   bannerMoviePage: [],
   allMovies: [],
+  popularMovies: [],
+  popularTvShows: [],
   movieSlide: null
 };
 
@@ -38,6 +40,12 @@ export const mutations = {
   },
   fetchBannerMoviePage(state, data) {
     state.bannerMoviePage = data
+  },
+  fetchPopularMovies(state, data) {
+    state.popularMovies = data
+  },
+  fetchTvShows(state, data) {
+    state.popularTvShows = data
   }
 };
 
@@ -89,5 +97,13 @@ export const actions = {
   async getBannerMoviePage({commit}) {
     const result = await axios.get(`https://api.themoviedb.org/3/trending/movie/day${API_KEY}`)
     commit("fetchBannerMoviePage", result.data.results.splice(0, 10))
+  },
+  async getPopularMovies({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/movie/popular${API_KEY}`)
+    commit("fetchPopularMovies", result.data.results)
+  },
+  async getPopularTvShows({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/tv/popular${API_KEY}`)
+    commit("fetchTvShows", result.data.results)
   }
 };

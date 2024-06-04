@@ -10,9 +10,12 @@
     <div class="cover left-0 top-0 absolute">
       <div class="video-func absolute left-1/2 top-1/2">
         <div class="function w-full mb-3 text-white flex items-center">
-          <div class="circle p-2 mr-3">
+          <router-link
+            to="/my-list"
+            class="circle p-2 mr-3"
+          >
             <svg-icon type="mdi" :path="pathInfo"> </svg-icon>
-          </div>
+          </router-link>
           <span>Info</span>
         </div>
         <div class="function mb-3 text-white flex items-center">
@@ -62,17 +65,26 @@ export default {
   computed: {
     ...movies.moviesComputed,
     ...auth.authComputed,
+    urlLink() {
+      if (this.type === 'movie') {
+        return { name: 'MovieDetail', params: { movieId: this.id} }
+      }
+      else {
+        return { name: 'TvShowDetail', params: { tvshowId: this.id} }
+      }
+    }
   },
   methods: {
     ...movies.moviesMethods,
     ...auth.authMethods,
     async removeMovie() {
-      const element = document.getElementById(this.id);
-      element.remove();
-      const movie = this.list.find((film) => {
-        return this.id === film.id
-      })
-      this.removeMovieFromList(movie)
+      console.log(this.type)
+      // const element = document.getElementById(this.id);
+      // element.remove();
+      // const movie = this.list.find((film) => {
+      //   return this.id === film.id;
+      // });
+      // this.removeMovieFromList(movie);
     },
   },
   async created() {

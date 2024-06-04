@@ -38,7 +38,7 @@
         <span class="ml-2">Play</span>
       </router-link>
       <router-link
-        to="/"
+        :to="urlLink"
         class="info mr-4 text-white flex items-center justify-center py-2 px-5"
       >
         <svg-icon type="mdi" :path="pathInfo"></svg-icon>
@@ -100,6 +100,14 @@ export default {
   computed: {
     ...movies.moviesComputed,
     ...auth.authComputed,
+    urlLink() {
+      if (this.type === 'movie') {
+        return { name: 'MovieDetail', params: { movieId: this.id} }
+      }
+      else {
+        return { name: 'TvShowDetail', params: { tvshowId: this.id} }
+      }
+    },
     movieRate() {
       return (this.rate * 10).toFixed(2);
     },
@@ -141,7 +149,7 @@ export default {
     async addMovie() {
       await this.callFilmDetail();
       await this.addMovieToList(this.filmDetail);
-      this.inital()
+      this.inital();
       this.isMovieInList;
     },
     async removeMovie() {
@@ -149,7 +157,7 @@ export default {
         return this.id === film.id;
       });
       await this.removeMovieFromList(movie);
-      this.inital()
+      this.inital();
       this.isMovieInList;
     },
     async inital() {
@@ -158,7 +166,7 @@ export default {
     },
   },
   async created() {
-    await this.inital()
+    await this.inital();
   },
 };
 </script>

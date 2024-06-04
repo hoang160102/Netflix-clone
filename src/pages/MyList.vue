@@ -7,8 +7,8 @@
           v-for="film in list"
           :key="film.id"
           :id="film.id"
-          :type="film.type"
           :image="film.poster_path"
+          :type="type"
         ></film-card>
       </div>
     </div>
@@ -28,6 +28,7 @@ export default {
   },
   computed: {
     ...auth.authComputed,
+    
   },
   methods: {
     ...auth.authMethods,
