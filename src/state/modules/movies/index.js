@@ -9,7 +9,10 @@ export const moviesComputed = {
     "bannerMoviePage",
     "allMovies",
     "popularMovies",
-    "popularTvShows"
+    "popularTvShows",
+    "tvGenre",
+    "allTvShows",
+    "bannerTvShowPage"
   ]),
 };
 export const moviesMethods = {
@@ -24,6 +27,9 @@ export const moviesMethods = {
     "getTvShowById",
     "getBannerMoviePage",
     "getPopularMovies",
-    "getPopularTvShows"
+    "getPopularTvShows",
+    "getTvShows",
+    "getGenreTvShows",
+    "getBannerTvShow"
   ]),
 };

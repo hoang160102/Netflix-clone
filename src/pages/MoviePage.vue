@@ -29,10 +29,14 @@
         ></slide-movie>
       </swiper-slide>
     </swiper>
-    <div class="genre-movie"></div>
-    <div class="slider-genre" v-for="kind in genres" :key="kind.id">
-      <h1>{{ kind.name }}</h1>
-      <h1>{}</h1>
+    <div class="display px-3">
+      <movie-category
+        v-for="item in listFilms"
+        :key="item.id"
+        :id="item.id"
+        :name="item.name"
+        :movies="item.movies"
+      ></movie-category>
     </div>
   </main-content>
 </template>
@@ -50,18 +54,21 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination } from "swiper/modules";
 import SlideMovie from "@/layout/slider/SlideMovie.vue";
+import MovieCategory from "../layout/movie-page/MovieCategory.vue"
 export default {
   data() {
     return {
       allGenres: [],
       allFilms: [],
       genreFilms: [],
+      listFilms: []
     };
   },
   components: {
     Swiper,
     SwiperSlide,
     SlideMovie,
+    MovieCategory
   },
   setup() {
     return {
@@ -74,14 +81,16 @@ export default {
   methods: {
     ...movies.moviesMethods,
     async filterMovie() {
-      const films = this.allFilms.filter(film => {
-        return film.genre_ids.every((id) => {
-          return this.allGenres.forEach((genre) => {
-            return id === genre.id
+      const result = this.allGenres.map((el) => {
+        return {
+          ...el,
+          movies: this.allFilms.filter((film) => {
+            return film.genre_ids.includes(el.id)
           })
-        })
+        }
       })
-      console.log(films)
+      console.log(result)
+      this.listFilms =  result
     },
     async initial() {
       await this.getBannerMoviePage();
@@ -89,6 +98,7 @@ export default {
       await this.getAllMovies();
       this.allGenres = this.genres;
       this.allFilms = this.allMovies;
+      this.filterMovie()
     },
   },
   async created() {

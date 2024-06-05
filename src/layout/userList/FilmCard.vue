@@ -11,7 +11,7 @@
       <div class="video-func absolute left-1/2 top-1/2">
         <div class="function w-full mb-3 text-white flex items-center">
           <router-link
-            to="/my-list"
+            :to="urlLink"
             class="circle p-2 mr-3"
           >
             <svg-icon type="mdi" :path="pathInfo"> </svg-icon>
@@ -78,13 +78,12 @@ export default {
     ...movies.moviesMethods,
     ...auth.authMethods,
     async removeMovie() {
-      console.log(this.type)
-      // const element = document.getElementById(this.id);
-      // element.remove();
-      // const movie = this.list.find((film) => {
-      //   return this.id === film.id;
-      // });
-      // this.removeMovieFromList(movie);
+      const movie = this.list.find((film) => {
+        return this.id === film.id;
+      });
+      await this.removeMovieFromList(movie);
+      const element = document.getElementById(this.id);
+      element.remove();
     },
   },
   async created() {

@@ -45,6 +45,7 @@
               class="search-input bg-zinc-700 outline-none text-white"
               placeholder="Titles, characters, genres"
               ref="searchInput"
+              v-model="search"
               :style="inputWidth"
             />
           </div>
@@ -91,6 +92,7 @@ import { mdiChevronDown } from "@mdi/js";
 import { mdiAccountBoxEditOutline } from "@mdi/js";
 import { mdiLogout } from "@mdi/js";
 import { auth } from "@/state/helpers";
+import router from "@/router";
 export default {
   props: ["email"],
   data() {
@@ -103,6 +105,7 @@ export default {
       width: "0px",
       border: "none",
       displaySubnav: "none",
+      search: 'search'
     };
   },
   components: {
@@ -127,6 +130,21 @@ export default {
         display: this.displaySubnav,
       };
     },
+    // standName() {
+    //   return `${this.fullInfoUser.firstName
+    //     .match(/(\b\S)?/g)
+    //     .join("")}${this.fullInfoUser.lastName.match(/(\b\S)?/g).join("")}`;
+    // },
+  },
+  watch: {
+    search(value) {
+      if (value === '') {
+        router.push('/')
+      }
+      else {
+        router.push(`/search/${value}`)
+      }
+    }
   },
   methods: {
     ...auth.authMethods,
@@ -154,12 +172,15 @@ export default {
     signOut() {
       this.logout();
     },
+    async initial() {
+      await this.getCurrentUser();
+    },
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
   },
-  created() {
-    // console.log(this.email)
+  async created() {
+    await this.initial();
   },
 };
 </script>

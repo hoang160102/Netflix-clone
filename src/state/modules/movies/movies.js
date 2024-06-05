@@ -12,7 +12,10 @@ export const state = {
   genres: [],
   filmDetail: [],
   bannerMoviePage: [],
+  bannerTvShowPage: [],
+  tvGenre: [],
   allMovies: [],
+  allTvShows: [],
   popularMovies: [],
   popularTvShows: [],
   movieSlide: null
@@ -44,8 +47,17 @@ export const mutations = {
   fetchPopularMovies(state, data) {
     state.popularMovies = data
   },
-  fetchTvShows(state, data) {
+  fetchPopularTvShows(state, data) {
     state.popularTvShows = data
+  },
+  fetchGenreTvShows(state, data) {
+    state.tvGenre = data
+  },
+  fetchTvShows(state, data) {
+    state.allTvShows = data
+  },
+  fetchBannerTvShows(state, data) {
+    state.bannerTvShowPage = data
   }
 };
 
@@ -104,6 +116,18 @@ export const actions = {
   },
   async getPopularTvShows({commit}) {
     const result = await axios.get(`https://api.themoviedb.org/3/tv/popular${API_KEY}`)
+    commit("fetchPopularTvShows", result.data.results)
+  },
+  async getGenreTvShows({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/genre/tv/list${API_KEY}`)
+    commit("fetchGenreTvShows", result.data)
+  },
+  async getTvShows({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/discover/tv${API_KEY}`)
     commit("fetchTvShows", result.data.results)
-  }
+  },
+  async getBannerTvShow({commit}) {
+    const result = await axios.get(`https://api.themoviedb.org/3/discover/tv${API_KEY}`)
+    commit("fetchBannerTvShows", result.data.results.splice(0, 10))
+  },
 };

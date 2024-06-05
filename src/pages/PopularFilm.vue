@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="popular-tv mx-auto px-10 py-5">
-      <h1 class="text-white text-4xl font-light">Popular Movies</h1>
+      <h1 class="text-white text-4xl font-light">Popular TV Shows</h1>
       <div class="list my-6 flex flex-wrap">
         <div class="m-6" v-for="movie in commonTv" :key="movie.id">
           <movie-list

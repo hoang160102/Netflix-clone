@@ -9,7 +9,7 @@
         <img class="h-full w-full" src="../assets/website.jpg" alt="" />
         <div class="login-container h-full flex justify-center items-center absolute">
           <form @submit.prevent="loginUser" class="login-form text-white">
-            <h2 class="mb-3">Sign In</h2>
+            <h2 class="mb-5 text-3xl text-center">Sign In</h2>
             <div class="form-group mb-5">
               <input
                 type="email"
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
     }
   },
   computed: {
@@ -64,7 +64,7 @@ export default {
         email: this.email,
         password: this.password
       })
-    }
+    },
   }
 }
 </script>
@@ -106,6 +106,10 @@ export default {
   border: none;
   border-radius: 5px;
   color: white;
+  cursor: pointer;
+}
+
+.login-google {
   cursor: pointer;
 }
 </style>

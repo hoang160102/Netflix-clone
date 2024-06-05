@@ -82,10 +82,10 @@ export default {
     },
     urlLink() {
       if (this.type === 'movie') {
-        return { name: 'MovieDetail', params: { movieId: this.id} }
+        return { name: 'MovieDetail', params: { movieId: this.id } }
       }
       else {
-        return { name: 'TvShowDetail', params: {  tvshowId: this.id} }
+        return { name: 'TvShowDetail', params: { tvshowId: this.id } }
       }
     }
   },
@@ -101,8 +101,10 @@ export default {
     },
     async addMovie() {
       await this.callFilmDetail();
-      await this.addMovieToList(this.filmDetail);
-      this.initial();
+      let newDetail = JSON.parse(JSON.stringify(this.filmDetail))
+      newDetail.type = this.type
+      await this.addMovieToList(newDetail);
+      await this.initial();
       this.isMovieInList;
     },
     async removeMovie() {

@@ -2,13 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./pages/HomePage.vue";
 import MoviePage from "./pages/MoviePage.vue";
 import PopularFilm from "./pages/PopularFilm.vue"
-import TelvisionShows from "./pages/TelvisionShows.vue";
+import TelevisionShows from "./pages/TelevisionShows.vue";
 import MyList from "./pages/MyList.vue";
 import StartNow from "./pages/StartNow.vue";
 import RegiserAccount from "./pages/RegisterAccount.vue";
 import LoginAccount from "./pages/LoginAccount.vue";
 import MovieInformation from "./pages/information/MovieInformation.vue";
 import TvshowInformation from './pages/information/TvshowInofmation.vue'
+import SearchPage from './pages/SearchPage.vue'
 // import store from "./state/store";
 
 const router = createRouter({
@@ -35,7 +36,7 @@ const router = createRouter({
     {
       path: "/tv-shows",
       name: "TVShows",
-      component: TelvisionShows,
+      component: TelevisionShows,
       meta: { title: "TV Shows", requiresAuth: true },
     },
     {
@@ -74,6 +75,12 @@ const router = createRouter({
       name: "TvShowDetail",
       meta: { title: "TV Show Detail", requiresAuth: true}
     },
+    {
+      path: "/search/:search",
+      component: SearchPage,
+      name: "Search",
+      meta: { title: "Search", requiresAuth: true }
+    }
   ],
   scrollBehavior(to, from, savedPos) {
     if (savedPos) {

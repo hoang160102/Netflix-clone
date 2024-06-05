@@ -8,7 +8,7 @@
           :key="film.id"
           :id="film.id"
           :image="film.poster_path"
-          :type="type"
+          :type="film.type"
         ></film-card>
       </div>
     </div>

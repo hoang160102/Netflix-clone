@@ -19,7 +19,7 @@
     <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
       {{ overview }}
     </div>
-    <div class="genres text-gray-400 my-4">
+    <div v-if="!!this.genre" class="genres text-gray-400 my-4">
       Genres: <span class="text-white">{{ getGenre }}</span>
     </div>
     <div class="flex">
@@ -123,7 +123,7 @@ export default {
     getGenre() {
       return this.genre
         .map((id) => {
-          const filmGenre = this.genres.find((type) => type.id === id);
+          const filmGenre = this.genres.find((kind) => kind.id === id);
           return filmGenre ? filmGenre.name : null;
         })
         .filter((name) => name !== null)
@@ -148,8 +148,10 @@ export default {
     },
     async addMovie() {
       await this.callFilmDetail();
-      await this.addMovieToList(this.filmDetail);
-      this.inital();
+      let newDetail = JSON.parse(JSON.stringify(this.filmDetail))
+      newDetail.type = this.type
+      await this.addMovieToList(newDetail);
+      await this.inital();
       this.isMovieInList;
     },
     async removeMovie() {

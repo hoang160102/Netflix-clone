@@ -1,7 +1,7 @@
 <template>
-  <div class="wrapper mt-7 p-7">
-    <div class="movie-title my-6 text-3xl font-semibold text-white">
-      {{ categoryTitle }}
+  <div v-if="!!showGenre" class="wrapper mt-7 p-7">
+    <div class="genre my-6 text-3xl font-semibold text-white">
+      {{ name }}
     </div>
     <swiper
       :modules="modules"
@@ -14,7 +14,11 @@
       class="mySwiper-slide"
     >
       <swiper-slide v-for="movie in movies" :key="movie.id">
-        <movie-list :id="movie.id" :image="movie.poster_path" :type="type"></movie-list>
+        <movie-list
+          :id="movie.id"
+          :image="movie.poster_path"
+          type="movie"
+        ></movie-list>
       </swiper-slide>
     </swiper>
   </div>
@@ -25,20 +29,16 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { movies } from "@/state/helpers";
+// import { movies } from "@/state/helpers";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-
-import MovieList from "./MovieList.vue";
-// Import Swiper styles
+import MovieList from "../layoutSlider/MovieList.vue";
 export default {
-  props: ["category-title", "request-url", "media-type"],
   data() {
     return {
-      movies: [],
       swiperOptions: {
         breakpoints: {
           500: {
@@ -61,34 +61,21 @@ export default {
       },
     };
   },
-  components: {
-    Swiper,
-    SwiperSlide,
-    MovieList,
-  },
   setup() {
     return {
       modules: [Navigation, Pagination, Scrollbar, A11y],
     };
   },
+  props: ["id", "name", "movies"],
+  components: {
+    Swiper,
+    SwiperSlide,
+    MovieList,
+  },
   computed: {
-    ...movies.moviesComputed,
-    type() {
-      return this.mediaType
-    }
-  },
-  methods: {
-    ...movies.moviesMethods,
-  },
-  async created() {
-    await this.getMovieSlide(this.requestUrl);
-    this.movies = this.movieSlide;
+    showGenre() {
+      return this.movies.length >= 3;
+    },
   },
 };
 </script>
-
-<style scoped>
-/* .swiper {
-  z-index: 0 !important;
-} */
-</style>

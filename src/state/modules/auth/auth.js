@@ -3,7 +3,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -21,7 +21,7 @@ const db = getFirestore(app);
 export const state = {
   user: null,
   fullInfoUser: null,
-  token: null
+  token: null,
 };
 
 export const mutations = {
@@ -29,10 +29,10 @@ export const mutations = {
     state.user = data;
   },
   logoutUser(state) {
-    state.user = null
+    state.user = null;
   },
   infoCurrentUser(state, data) {
-    state.fullInfoUser = data
+    state.fullInfoUser = data;
   },
   // setToken(state, data) {
   //   state.token = data
@@ -51,7 +51,7 @@ export const actions = {
           email: newUser.email,
           password: newUser.password,
           id: result.user.uid,
-          userList: []
+          userList: [],
         });
         setTimeout(() => {
           router.push({ name: "Login" });
@@ -63,7 +63,7 @@ export const actions = {
         }
       });
   },
-  async login({commit}, user) {
+  async login({ commit }, user) {
     await signInWithEmailAndPassword(auth, user.email, user.password)
       .then(() => {
         toast.success("Login Successfully");
@@ -71,7 +71,7 @@ export const actions = {
         // commit(auth.currentUser.accessToken)
         commit("userLoggedIn", {
           email: user.email,
-          password: user.password
+          password: user.password,
         });
         setTimeout(() => {
           router.push({ name: "Home" });
@@ -81,6 +81,38 @@ export const actions = {
         toast.error("Email or password is incorrect");
       });
   },
+  // async loginWithGoogle() {
+  //   const provider = new GoogleAuthProvider();
+  //   signInWithPopup(auth, provider)
+  //     .then((result) => {
+  //       // This gives you a Google Access Token. You can use it to access the Google API.
+  //       // const credential = GoogleAuthProvider.credentialFromResult(result);
+  //       // const token = credential.accessToken;
+  //       // The signed-in user info.
+  //       const user = result.user;
+  //       setDoc(doc(db, "users", user.uid), {
+  //         firstName: user.firstName,
+  //         lastName: user.lastName,
+  //         email: user.email,
+  //         password: user.password,
+  //         id: user.uid,
+  //         userList: [],
+  //       });
+  //       // IdP data available using getAdditionalUserInfo(result)
+  //       // ...
+  //     })
+  //     .catch((error) => {
+  //       // Handle Errors here.
+  //       // const errorCode = error.code;
+  //       // const errorMessage = error.message;
+  //       // // The email of the user's account used.
+  //       // const email = error.customData.email;
+  //       // // The AuthCredential type that was used.
+  //       // const credential = GoogleAuthProvider.credentialFromError(error);
+  //       return error;
+  //       // ...
+  //     });
+  // },
   async getCurrentUser({ commit }) {
     const usersCol = collection(db, "users");
     const userSnapshot = await getDocs(usersCol);
@@ -95,18 +127,18 @@ export const actions = {
         lastName: getUser[0].data().lastName,
         email: getUser[0].data().email,
         password: getUser[0].data().password,
-        userList: getUser[0].data().userList
+        userList: getUser[0].data().userList,
       };
       await commit("infoCurrentUser", currentUser);
     } catch (err) {
       return err;
     }
   },
-  logout({commit}) {
+  logout({ commit }) {
     signOut(auth).then(() => {
-      commit('logoutUser')
-      router.push({name: 'Login'})
-    })
+      commit("logoutUser");
+      router.push({ name: "Login" });
+    });
   },
   // initializeStore({ commit }) {
   //   const token = localStorage.getItem('token');
@@ -119,7 +151,6 @@ export const actions = {
 
 export const getters = {
   isLoggedIn(state) {
-    return !!state.user
+    return !!state.user;
   },
-}
-
+};
