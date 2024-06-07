@@ -1,9 +1,9 @@
 <template>
   <main-content>
-    <div class="popular-movie mx-auto px-10 py-5">
+    <div class="popular-movie mx-auto px-5 py-5">
       <h1 class="text-white text-4xl font-light">Popular Movies</h1>
       <div class="list my-6 flex flex-wrap">
-        <div class="m-6" v-for="movie in commonMovies" :key="movie.id">
+        <div class="m-5" v-for="movie in commonMovies" :key="movie.id">
           <movie-list
           :id="movie.id"
           :image="movie.poster_path"
@@ -11,10 +11,10 @@
         </div>
       </div>
     </div>
-    <div class="popular-tv mx-auto px-10 py-5">
+    <div class="popular-tv mx-auto px-5 py-5">
       <h1 class="text-white text-4xl font-light">Popular TV Shows</h1>
       <div class="list my-6 flex flex-wrap">
-        <div class="m-6" v-for="movie in commonTv" :key="movie.id">
+        <div class="m-5" v-for="movie in commonTv" :key="movie.id">
           <movie-list
           :id="movie.id"
           :image="movie.poster_path"
@@ -58,6 +58,10 @@ export default {
 
 <style scoped>
 .popular-movie, .popular-tv {
-  max-width: 1700px;
+  max-width: 1800px;
+}
+
+.m-5 {
+  width: 250px;
 }
 </style>

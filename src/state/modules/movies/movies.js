@@ -18,7 +18,8 @@ export const state = {
   allTvShows: [],
   popularMovies: [],
   popularTvShows: [],
-  movieSlide: null
+  movieSlide: null,
+  actors: []
 };
 
 export const mutations = {
@@ -58,6 +59,9 @@ export const mutations = {
   },
   fetchBannerTvShows(state, data) {
     state.bannerTvShowPage = data
+  },
+  fetchActors(state, data) {
+    state.actors = data
   }
 };
 
@@ -130,4 +134,9 @@ export const actions = {
     const result = await axios.get(`https://api.themoviedb.org/3/discover/tv${API_KEY}`)
     commit("fetchBannerTvShows", result.data.results.splice(0, 10))
   },
+  // get cast
+  async getActors({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}/credits${API_KEY}`)
+    commit("fetchActors", result.data.cast.splice(0, 10))
+  }
 };

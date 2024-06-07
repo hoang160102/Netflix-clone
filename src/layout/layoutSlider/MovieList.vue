@@ -128,13 +128,13 @@ export default {
 
 <style scoped>
 .film {
-  max-height: 320px;
+  max-height: 350px;
   transition: all 0.5s ease;
 }
 
 img {
   border-radius: 10px;
-  max-height: 320px;
+  max-height: 350px;
 }
 
 .film:hover {
