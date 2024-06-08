@@ -1,15 +1,15 @@
 <template>
-  <section class="w-full">
+  <section class="w-screen">
     <div class="w-full relative movie-img">
       <img :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
       <div class="left-back h-full w-1/2 absolute top-0 left-0"></div>
       <div class="movie-wrapper w-full absolute left-0 top-0"></div>
     </div>
-    <div class="info-movie w-full top-2/4 absolute">
-      <div class="title-movie ml-10 pl-10 text-white text-5xl font-bold">
+    <div class="info-movie w-full left-14 top-2/4 absolute">
+      <div class="title-movie text-white text-5xl font-bold">
         {{ title }}
       </div>
-      <div class="rate-release ml-10 pl-10 my-4 flex">
+      <div class="rate-release my-4 flex">
         <div class="rate font-light text-base mr-4" :class="movieRateColor">
           {{ movieRate }}% Match
         </div>
@@ -17,13 +17,19 @@
           {{ releaseDate }}
         </div>
       </div>
-      <div class="movie-detail ml-10 pl-10 my-4 w-1/3 text-gray-400 font-light">
+      <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
         {{ overview }}
       </div>
-      <div v-if="!!movieGerne" class="genres ml-10 pl-10 text-gray-400 my-4">
+      <div v-if="!!movieGerne" class="genres text-gray-400 my-4">
         Genres: <span class="text-white">{{ getGenre }}</span>
       </div>
-      <div class="flex ml-10 pl-10">
+      <div v-if="seasons > 1" class="season my-4 w-1/3 text-gray-400 font-light">
+        {{ seasons }} seasons
+      </div>
+      <div v-else class="season my-4 w-1/3 text-gray-400 font-light">
+        {{ seasons }} season
+      </div>
+      <div class="flex">
         <router-link
           to="/"
           class="info mr-4 text-white flex items-center justify-center py-2 px-5"
@@ -61,15 +67,16 @@ import { auth } from "@/state/helpers";
 import { mdiPlay } from "@mdi/js";
 export default {
   props: [
+    "detail",
     "id",
     "image",
     "title",
     "rate",
-    "overview",
     "release",
+    "overview",
     "genre",
+    "seasons",
     "type",
-    "detail",
   ],
   components: {
     SvgIcon,
@@ -90,18 +97,6 @@ export default {
     movieRate() {
       return (this.rate * 10).toFixed(2);
     },
-    movieRateColor() {
-      const percent = this.rate * 10;
-      if (percent < 50) return "text-red-600";
-      if (percent < 70) return "text-yellow-400";
-      return "text-emerald-500";
-    },
-    getGenre() {
-      let genre = this.movieGerne.map((kind) => {
-        return kind.name;
-      });
-      return genre.join(", ")
-    },
     isMovieInList() {
       const movie = this.list.some((film) => {
         return this.id === film.id;
@@ -110,7 +105,19 @@ export default {
     },
     releaseDate() {
       return this.release.replace(/-/g, "/")
-    }
+    },
+    getGenre() {
+      let genre = this.movieGerne.map((kind) => {
+        return kind.name;
+      });
+      return genre.join(", ")
+    },
+    movieRateColor() {
+      const percent = this.rate * 10;
+      if (percent < 50) return "text-red-600";
+      if (percent < 70) return "text-yellow-400";
+      return "text-emerald-500";
+    },
   },
   methods: {
     ...movies.moviesMethods,
@@ -131,7 +138,7 @@ export default {
       this.isMovieInList;
     },
     async initial() {
-      await this.getCurrentUser();
+      await this.getCurrentUser()
       this.list = this.fullInfoUser.userList;
       this.movieGerne = this.genre
     },
@@ -196,3 +203,4 @@ section {
   }
 }
 </style>
+

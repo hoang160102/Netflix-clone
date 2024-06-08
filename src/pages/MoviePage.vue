@@ -89,7 +89,6 @@ export default {
           })
         }
       })
-      console.log(result)
       this.listFilms =  result
     },
     async initial() {

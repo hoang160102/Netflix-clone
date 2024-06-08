@@ -27,13 +27,6 @@
         to="/"
         class="info mr-4 text-white flex items-center justify-center py-2 px-5"
       >
-        <svg-icon type="mdi" :path="pathTeaser"></svg-icon>
-        <span class="ml-2">Teaser</span>
-      </router-link>
-      <router-link
-        to="/"
-        class="info mr-4 text-white flex items-center justify-center py-2 px-5"
-      >
         <svg-icon type="mdi" :path="pathPlay"></svg-icon>
         <span class="ml-2">Play</span>
       </router-link>

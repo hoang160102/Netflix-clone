@@ -8,7 +8,7 @@ import StartNow from "./pages/StartNow.vue";
 import RegiserAccount from "./pages/RegisterAccount.vue";
 import LoginAccount from "./pages/LoginAccount.vue";
 import MovieInformation from "./pages/information/MovieInformation.vue";
-import TvshowInformation from './pages/information/TvshowInofmation.vue'
+import TvshowInformation from './pages/tv-information/TvshowInofmation.vue'
 import SearchPage from './pages/SearchPage.vue'
 // import store from "./state/store";
 

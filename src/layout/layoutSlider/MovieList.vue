@@ -17,12 +17,6 @@
         </div>
         <div class="function mb-3 text-white flex items-center">
           <div class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathTeaser"> </svg-icon>
-          </div>
-          <span>Teaser</span>
-        </div>
-        <div class="function mb-3 text-white flex items-center">
-          <div class="circle p-2 mr-3">
             <svg-icon type="mdi" :path="pathPlay"></svg-icon>
           </div>
           <span>Play</span>

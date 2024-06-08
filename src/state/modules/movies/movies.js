@@ -19,7 +19,8 @@ export const state = {
   popularMovies: [],
   popularTvShows: [],
   movieSlide: null,
-  actors: []
+  actors: [],
+  video: []
 };
 
 export const mutations = {
@@ -62,6 +63,9 @@ export const mutations = {
   },
   fetchActors(state, data) {
     state.actors = data
+  },
+  fetchVideo(state, data) {
+    state.video = data
   }
 };
 
@@ -137,6 +141,19 @@ export const actions = {
   // get cast
   async getActors({commit}, id) {
     const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}/credits${API_KEY}`)
-    commit("fetchActors", result.data.cast.splice(0, 10))
+    commit("fetchActors", result.data.cast.splice(0, 15))
+  },
+  async getTvActors({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/tv/${id}/credits${API_KEY}`)
+    commit("fetchActors", result.data.cast.splice(0, 15))
+  },
+  // getVideo
+  async getVideo({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos${API_KEY}`)
+    commit("fetchVideo", result.data.results.splice(0, 3))
+  },
+  async getTvVideo({commit}, id) {
+    const result = await axios.get(`https://api.themoviedb.org/3/tv/${id}/videos${API_KEY}`)
+    commit("fetchVideo", result.data.results.splice(0, 3))
   }
 };

@@ -1,18 +1,21 @@
 <template>
   <main-content>
-    <banner-movie
+    <banner-television
       :detail="detail"
       :id="detail.id"
       :image="detail.backdrop_path"
-      :title="detail.title"
+      :title="detail.name"
       :rate="detail.vote_average"
+      :release="detail.first_air_date"
       :overview="detail.overview"
-      :release="detail.release_date"
       :genre="detail.genres"
+      :seasons="detail.number_of_seasons"
       type="movie"
-    ></banner-movie>
+    ></banner-television>
     <div class="cast mt-5 p-10">
-      <div class="title font-semibold text-5xl mb-5 text-center text-white">Actors</div>
+      <div class="title font-semibold text-5xl mb-5 text-center text-white">
+        Actors
+      </div>
       <swiper
         :modules="modules"
         :slides-per-view="6"
@@ -24,48 +27,52 @@
         class="mySwiper-slide"
       >
         <swiper-slide v-for="actor in actors" :key="actor.id">
-          <list-actors
+          <television-actors
             :id="actor.id"
             :profile="actor.profile_path"
             :name="actor.name"
             :cast-name="actor.character"
-          ></list-actors>
+          ></television-actors>
         </swiper-slide>
       </swiper>
     </div>
     <div class="trailer mt-5 p-10">
-      <div class="title font-semibold text-5xl mb-5 text-center text-white">Trailer</div>
-      <div v-if="!!videoLink" class="video flex flex-wrap justify-center mx-auto">
-        <film-trailer
+      <div class="title font-semibold text-5xl mb-5 text-center text-white">
+        Trailer
+      </div>
+      <div
+        v-if="!!videoLink"
+        class="video flex flex-wrap justify-center mx-auto"
+      >
+        <television-trailer
           v-for="vid in videoLink"
           :key="vid.id"
           :id="vid.id"
           :video-key="vid.key"
-        ></film-trailer>
+        ></television-trailer>
       </div>
     </div>
   </main-content>
 </template>
 
 <script>
-import { movies } from "@/state/helpers";
-import BannerMovie from "./banner/BannerMovie.vue";
-import ListActors from "./actors/ListActors.vue";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import FilmTrailer from './trailer/MovieTrailer.vue'
+import { movies } from "@/state/helpers";
+import BannerTelevision from "./banner-tv/BannerTelevision.vue";
+import TelevisionActors from "./actors/TelevisionActors.vue";
+import TelevisionTrailer from "./tv-trailer/TelevisionTrailer.vue";
 export default {
   components: {
-    BannerMovie,
-    ListActors,
+    BannerTelevision,
     Swiper,
     SwiperSlide,
-    FilmTrailer
+    TelevisionActors,
+    TelevisionTrailer,
   },
   setup() {
     return {
@@ -75,7 +82,7 @@ export default {
   data() {
     return {
       detail: [],
-      videoLink: null,
+      videoLink: [],
       swiperOptions: {
         breakpoints: {
           500: {
@@ -108,11 +115,11 @@ export default {
   methods: {
     ...movies.moviesMethods,
     async initial() {
-      await this.getMovieById(this.$route.params.movieId);
-      await this.getActors(this.$route.params.movieId);
-      await this.getVideo(this.$route.params.movieId)
+      await this.getTvShowById(this.$route.params.tvshowId);
+      await this.getTvActors(this.$route.params.tvshowId);
+      await this.getTvVideo(this.$route.params.tvshowId);
       this.detail = this.filmDetail;
-      this.videoLink = this.video
+      this.videoLink = this.video;
     },
   },
   async created() {
@@ -120,10 +127,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-  .video {
-    max-width: 1800px;
-  }
-  
-</style>

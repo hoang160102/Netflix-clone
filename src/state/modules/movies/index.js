@@ -13,7 +13,8 @@ export const moviesComputed = {
     "tvGenre",
     "allTvShows",
     "bannerTvShowPage",
-    "actors"
+    "actors",
+    "video"
   ]),
 };
 export const moviesMethods = {
@@ -32,6 +33,9 @@ export const moviesMethods = {
     "getTvShows",
     "getGenreTvShows",
     "getBannerTvShow",
-    "getActors"
+    "getActors",
+    "getTvActors",
+    "getVideo",
+    "getTvVideo"
   ]),
 };
