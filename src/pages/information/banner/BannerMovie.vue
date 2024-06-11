@@ -87,6 +87,12 @@ export default {
   computed: {
     ...movies.moviesComputed,
     ...auth.authComputed,
+    // watchFilm() {
+    //   return {
+    //     name: "Play Movie",
+    //     params: { movieId: 13134 }
+    //   }
+    // },
     movieRate() {
       return (this.rate * 10).toFixed(2);
     },

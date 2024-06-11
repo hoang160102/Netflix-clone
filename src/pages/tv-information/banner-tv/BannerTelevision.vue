@@ -1,37 +1,38 @@
 <template>
-  <section class="w-screen">
+  <section class="w-full">
     <div class="w-full relative movie-img">
       <img :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
       <div class="left-back h-full w-1/2 absolute top-0 left-0"></div>
       <div class="movie-wrapper w-full absolute left-0 top-0"></div>
     </div>
-    <div class="info-movie w-full left-14 top-2/4 absolute">
-      <div class="title-movie text-white text-5xl font-bold">
+    <div class="info-movie w-full top-2/4 absolute">
+      <div class="title-movie ml-10 pl-10 text-white text-5xl font-bold">
         {{ title }}
       </div>
       <div class="rate-release my-4 flex">
-        <div class="rate font-light text-base mr-4" :class="movieRateColor">
+        <div class="rate font-light ml-10 pl-10 text-base mr-4" :class="movieRateColor">
           {{ movieRate }}% Match
         </div>
         <div v-if="!!release" class="release font-light text-base text-white">
           {{ releaseDate }}
         </div>
       </div>
-      <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
+      <div class="movie-detail ml-10 pl-10 my-4 w-1/3 text-gray-400 font-light">
         {{ overview }}
       </div>
-      <div v-if="!!movieGerne" class="genres text-gray-400 my-4">
+      <div v-if="!!movieGerne" class="genres ml-10 pl-10 text-gray-400 my-4">
         Genres: <span class="text-white">{{ getGenre }}</span>
       </div>
-      <div v-if="seasons > 1" class="season my-4 w-1/3 text-gray-400 font-light">
+      <div v-if="seasons > 1" class="season ml-10 pl-10 my-4 w-1/3 text-gray-400 font-light">
         {{ seasons }} seasons
       </div>
-      <div v-else class="season my-4 w-1/3 text-gray-400 font-light">
+      <div v-else class="season ml-10 pl-10 my-4 w-1/3 text-gray-400 font-light">
         {{ seasons }} season
       </div>
-      <div class="flex">
+      <div class="flex ml-10 pl-10">
         <router-link
-          to="/"
+          v-if="!!id"
+          :to="watchFilm"
           class="info mr-4 text-white flex items-center justify-center py-2 px-5"
         >
           <svg-icon type="mdi" :path="pathPlay"></svg-icon>
@@ -94,6 +95,13 @@ export default {
   computed: {
     ...movies.moviesComputed,
     ...auth.authComputed,
+    watchFilm() {
+      return {
+        name: "Play TV Show",
+        params: { tvId: this.id },
+        query: { season: 1, ep: 1 },
+      }
+    },
     movieRate() {
       return (this.rate * 10).toFixed(2);
     },

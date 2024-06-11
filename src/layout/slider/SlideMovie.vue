@@ -24,7 +24,7 @@
     </div>
     <div class="flex">
       <router-link
-        to="/"
+        :to="watchFilm"
         class="info mr-4 text-white flex items-center justify-center py-2 px-5"
       >
         <svg-icon type="mdi" :path="pathPlay"></svg-icon>
@@ -53,6 +53,12 @@
         <svg-icon type="mdi" :path="pathMinus"></svg-icon>
         <span>My List</span>
       </button>
+      <!-- <button @click="rating" class="text-white flex items-center ml-3 justify-center py-2 px-4">
+        <svg-icon type="mdi" :path="pathCancelLike"></svg-icon>
+      </button>
+      <button class="text-white text-cyan-600 flex items-center ml-3 justify-center py-2 px-4">
+        <svg-icon type="mdi" :path="pathLike"></svg-icon>
+      </button> -->
     </div>
   </div>
 </template>
@@ -66,6 +72,8 @@ import { auth } from "@/state/helpers";
 import { mdiInformationOutline } from "@mdi/js";
 import { mdiVideoOutline } from "@mdi/js";
 import { mdiPlay } from "@mdi/js";
+// import { mdiThumbUp } from "@mdi/js";
+// import { mdiThumbUpOutline } from "@mdi/js";
 export default {
   props: [
     "id",
@@ -87,6 +95,8 @@ export default {
       pathTeaser: mdiVideoOutline,
       pathPlay: mdiPlay,
       pathMinus: mdiMinus,
+      // pathLike: mdiThumbUp,
+      // pathCancelLike: mdiThumbUpOutline,
       list: [],
     };
   },
@@ -99,6 +109,21 @@ export default {
       }
       else {
         return { name: 'TvShowDetail', params: { tvshowId: this.id} }
+      }
+    },
+    watchFilm() {
+      if (this.type === 'tv') {
+        return {
+        name: "Play TV Show",
+        params: { tvId: this.id },
+        query: { season: 1, ep: 1 },
+        }
+      }
+      else {
+        return {
+          name: "Play Movie",
+          params: { movieId: this.id }
+        }
       }
     },
     movieRate() {
@@ -132,6 +157,14 @@ export default {
   methods: {
     ...movies.moviesMethods,
     ...auth.authMethods,
+    // rating() {
+    //   if (this.type === "movie") {
+    //     this.addMovieRating(this.id)
+    //   }
+    //   else {
+    //     this.addTvShowRating(this.id)
+    //   }
+    // },  
     async callFilmDetail() {
       if (this.type === "movie") {
         await this.getMovieById(this.id);

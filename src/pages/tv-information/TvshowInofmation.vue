@@ -12,30 +12,6 @@
       :seasons="detail.number_of_seasons"
       type="movie"
     ></banner-television>
-    <div class="cast mt-5 p-10">
-      <div class="title font-semibold text-5xl mb-5 text-center text-white">
-        Actors
-      </div>
-      <swiper
-        :modules="modules"
-        :slides-per-view="6"
-        :space-between="50"
-        navigation
-        :pagination="{ clickable: true }"
-        :scrollbar="{ draggable: true }"
-        :breakpoints="swiperOptions.breakpoints"
-        class="mySwiper-slide"
-      >
-        <swiper-slide v-for="actor in actors" :key="actor.id">
-          <television-actors
-            :id="actor.id"
-            :profile="actor.profile_path"
-            :name="actor.name"
-            :cast-name="actor.character"
-          ></television-actors>
-        </swiper-slide>
-      </swiper>
-    </div>
     <div class="trailer mt-5 p-10">
       <div class="title font-semibold text-5xl mb-5 text-center text-white">
         Trailer
@@ -52,6 +28,66 @@
         ></television-trailer>
       </div>
     </div>
+    <div class="season mt-5 p-10">
+        <select class="mb-5" v-model="selected" @change="fetchEpisodes">
+          <option disabled value="">Choose season</option>
+          <option
+            v-for="(item, index) in detail.number_of_seasons"
+            :key="index"
+            :value="index + 1"
+          >
+            Season {{ index + 1 }}
+          </option>
+        </select>
+      <div v-if="!!listEpisodes" class="list-ep">
+        <swiper
+        :modules="modules"
+        :slides-per-view="6"
+        :space-between="50"
+        navigation
+        :pagination="{ clickable: true }"
+        :scrollbar="{ draggable: true }"
+        :breakpoints="swiperOptions.breakpointsEp"
+        class="mySwiper-slide swiper-ep"
+      >
+        <swiper-slide v-for="ep in listEpisodes" :key="ep.id">
+          <television-episodes
+            :series-id="getSeriesId"
+            :id="ep.id"
+            :image="ep.still_path"
+            :num="ep.episode_number"
+            :name="ep.name"
+            :overview="ep.overview"
+            :season="selected"
+          ></television-episodes>
+        </swiper-slide>
+      </swiper>
+      </div>
+    </div>
+    <div v-if="!!actors" class="cast mt-5 p-10">
+      <div class="title font-semibold text-5xl mb-5 text-center text-white">
+        Actors
+      </div>
+      <swiper
+        :modules="modules"
+        :slides-per-view="6"
+        :space-between="50"
+        navigation
+        :pagination="{ clickable: true }"
+        :scrollbar="{ draggable: true }"
+        :breakpoints="swiperOptions.breakpointsActor"
+        class="mySwiper-slide"
+      >
+        <swiper-slide v-for="actor in actors" :key="actor.id">
+          <television-actors
+            :id="actor.id"
+            :profile="actor.profile_path"
+            :name="actor.name"
+            :cast-name="actor.character"
+          ></television-actors>
+        </swiper-slide>
+      </swiper>
+    </div>
   </main-content>
 </template>
 
@@ -66,6 +102,7 @@ import { movies } from "@/state/helpers";
 import BannerTelevision from "./banner-tv/BannerTelevision.vue";
 import TelevisionActors from "./actors/TelevisionActors.vue";
 import TelevisionTrailer from "./tv-trailer/TelevisionTrailer.vue";
+import TelevisionEpisodes from "./episodes/TelevisionEpisodes.vue"
 export default {
   components: {
     BannerTelevision,
@@ -73,6 +110,7 @@ export default {
     SwiperSlide,
     TelevisionActors,
     TelevisionTrailer,
+    TelevisionEpisodes
   },
   setup() {
     return {
@@ -83,8 +121,10 @@ export default {
     return {
       detail: [],
       videoLink: [],
+      listEpisodes: null,
+      selected: "",
       swiperOptions: {
-        breakpoints: {
+        breakpointsActor: {
           500: {
             slidesPerView: 2,
             slidesPerGroup: 2,
@@ -106,14 +146,46 @@ export default {
             slidesPerGroup: 5,
           },
         },
+        breakpointsEp: {
+          500: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+          800: {
+            slidesPerView: 3,
+            slidesPerGroup: 2,
+          },
+          1000: {
+            slidesPerView: 4,
+            slidesPerGroup: 3,
+          },
+          1300: {
+            slidesPerView: 5,
+            slidesPerGroup: 4,
+          },
+          1600: {
+            slidesPerView: 5,
+            slidesPerGroup: 4,
+          },
+        },
       },
     };
   },
   computed: {
     ...movies.moviesComputed,
+    getSeriesId() {
+      return this.$route.params.tvshowId
+    },
   },
   methods: {
     ...movies.moviesMethods,
+    async fetchEpisodes() {
+      await this.getEpisodes({
+        id: this.$route.params.tvshowId,
+        ss: this.selected
+      })
+      this.listEpisodes = this.episodes
+    },
     async initial() {
       await this.getTvShowById(this.$route.params.tvshowId);
       await this.getTvActors(this.$route.params.tvshowId);
@@ -127,3 +199,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+select {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+</style>

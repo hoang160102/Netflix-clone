@@ -59,6 +59,11 @@
 .mySwiper-slide .swiper-button-prev, .mySwiper-slide .swiper-button-next {
   color: #fff !important;
 }
+
+.swiper-ep > .swiper-wrapper {
+  display: flex;
+  align-items: center;
+}
  
 main {
   min-height: 100vh;

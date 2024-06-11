@@ -14,7 +14,9 @@ export const moviesComputed = {
     "allTvShows",
     "bannerTvShowPage",
     "actors",
-    "video"
+    "video",
+    "episodes",
+    "recommendations"
   ]),
 };
 export const moviesMethods = {
@@ -36,6 +38,10 @@ export const moviesMethods = {
     "getActors",
     "getTvActors",
     "getVideo",
-    "getTvVideo"
+    "getTvVideo",
+    // "addMovieRating",
+    // "addTvShowRating"
+    "getEpisodes",
+    "getMovieRecommendations"
   ]),
 };

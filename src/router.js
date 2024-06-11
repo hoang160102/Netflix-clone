@@ -10,6 +10,8 @@ import LoginAccount from "./pages/LoginAccount.vue";
 import MovieInformation from "./pages/information/MovieInformation.vue";
 import TvshowInformation from './pages/tv-information/TvshowInofmation.vue'
 import SearchPage from './pages/SearchPage.vue'
+import WatchSeries from "./pages/watch/WatchSeries.vue";
+import WatchMovie from "./pages/watch/WatchMovie.vue"
 // import store from "./state/store";
 
 const router = createRouter({
@@ -80,6 +82,18 @@ const router = createRouter({
       component: SearchPage,
       name: "Search",
       meta: { title: "Search", requiresAuth: true }
+    },
+    {
+      path: "/tv-player/:tvId",
+      component: WatchSeries,
+      name: "Play TV Show",
+      meta: { title: "Play", requiresAuth: true}
+    },
+    {
+      path: "/movie-player/:movieId",
+      component: WatchMovie,
+      name: "Play Movie",
+      meta: { title: "Play", requiresAuth: true }
     }
   ],
   scrollBehavior(to, from, savedPos) {
