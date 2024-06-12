@@ -1,5 +1,5 @@
 <template>
-  <section class="relative">
+    <section class="relative">
     <header class="bg-transparent flex items-center justify-between py-6 px-10">
       <div class="z-10 logo font-bold text-red-600">NETFLIX</div>
     </header>
@@ -8,9 +8,9 @@
       <div class="bg-img w-full h-full">
         <img class="h-full w-full" src="../assets/website.jpg" alt="" />
         <div class="login-container h-full flex justify-center items-center absolute">
-          <form @submit.prevent="loginUser" class="login-form text-white">
-            <h2 class="mb-5 text-3xl text-center">Sign In</h2>
-            <div class="form-group mb-5">
+          <form @submit.prevent="resetPass" class="login-form text-white">
+            <h2 class="mb-5 text-3xl text-center">Forgot Password</h2>
+            <div class="form-group mb-3">
               <input
                 type="email"
                 v-model="email"
@@ -19,25 +19,14 @@
                 class="bg-zinc-700 w-full p-3"
               />
             </div>
-            <div class="form-group mb-7">
-              <input
-                type="password"
-                v-model="password"
-                placeholder="Password"
-                required
-                class="bg-zinc-700 w-full p-3"
-              />
-            </div>
+            <span class="mb-3">Enter your gmail to reset your password</span>
             <button
               type="submit"
-              class="login-button w-full p-3 mb-3"
+              class="login-button w-full p-3 my-3"
             >
-              Sign In
+              Reset Password
             </button>
-            <router-link class="float-right underline text-sm font-extralight text-slate-400" :to="{ name: 'Forgot Password' }">Need help ?</router-link>
-            <div class="new-user font-extralight text-slate-400 mt-10">New to Netflix? 
-              <router-link class="text-white" :to="{ name: 'Register' }">Sign Up Now</router-link>
-            </div>
+            <router-link class="underline text-sm font-extralight text-slate-400" :to="{ name: 'Login' }">Back to Login</router-link>
           </form>
         </div>
       </div>
@@ -46,25 +35,21 @@
 </template>
 
 <script>
-import { auth } from '@/state/helpers';
+import { auth } from '@/state/helpers'
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      email: ''
     }
   },
   computed: {
-    ...auth.authComputed,
+    ...auth.authComputed
   },
   methods: {
     ...auth.authMethods,
-    loginUser() {
-      this.login({
-        email: this.email,
-        password: this.password
-      })
-    },
+    async resetPass() {
+      await this.resetPassword(this.email)
+    }
   }
 }
 </script>

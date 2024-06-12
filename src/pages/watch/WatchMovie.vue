@@ -28,7 +28,7 @@
           <movie-list
             :id="movie.id"
             :image="movie.poster_path"
-            :type="type"
+            type="movie"
           ></movie-list>
         </swiper-slide>
       </swiper>

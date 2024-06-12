@@ -25,7 +25,7 @@
       </div>
       <div class="flex ml-10 pl-10">
         <router-link
-          to="/"
+          :to="watchFilm"
           class="info mr-4 text-white flex items-center justify-center py-2 px-5"
         >
           <svg-icon type="mdi" :path="pathPlay"></svg-icon>
@@ -87,6 +87,21 @@ export default {
   computed: {
     ...movies.moviesComputed,
     ...auth.authComputed,
+    watchFilm() {
+      if (this.type === 'tv') {
+        return {
+        name: "Play TV Show",
+        params: { tvId: this.id },
+        query: { season: 1, ep: 1 },
+        }
+      }
+      else {
+        return {
+          name: "Play Movie",
+          params: { movieId: this.$route.params.movieId }
+        }
+      }
+    },
     // watchFilm() {
     //   return {
     //     name: "Play Movie",

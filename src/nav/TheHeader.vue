@@ -56,14 +56,15 @@
           class="profile-nav flex items-center"
         >
           <div class="user ml-4">
-            <div class="info bg-slate-500 relative p-2 text-white">HV</div>
+            <div v-if="user" class="info bg-slate-500 relative p-2 text-white">{{ standName }}</div>
             <div class="subnav p-4 bg-slate-800 absolute" :style="display">
-              <div
+              <router-link
+                :to="{ name: 'Account'}"
                 class="edit-profile text-white font-extralight text-slate-400 font-sm flex"
               >
                 <svg-icon type="mdi" :path="pathEdit" class="mr-2"></svg-icon>
                 Manage Profile
-              </div>
+              </router-link>
               <div
                 class="sign-out mt-4 text-white font-extralight text-slate-400 font-sm flex"
                 @click="signOut"
@@ -105,7 +106,8 @@ export default {
       width: "0px",
       border: "none",
       displaySubnav: "none",
-      search: 'search'
+      search: 'search',
+      user: null
     };
   },
   components: {
@@ -130,11 +132,11 @@ export default {
         display: this.displaySubnav,
       };
     },
-    // standName() {
-    //   return `${this.fullInfoUser.firstName
-    //     .match(/(\b\S)?/g)
-    //     .join("")}${this.fullInfoUser.lastName.match(/(\b\S)?/g).join("")}`;
-    // },
+    standName() {
+      return `${this.user.firstName
+        .match(/(\b\S)?/g)
+        .join("")}${this.user.lastName.match(/(\b\S)?/g).join("")}`;
+    },
   },
   watch: {
     search(value) {
@@ -181,6 +183,7 @@ export default {
   },
   async created() {
     await this.initial();
+    this.user = this.fullInfoUser
   },
 };
 </script>

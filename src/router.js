@@ -12,6 +12,8 @@ import TvshowInformation from './pages/tv-information/TvshowInofmation.vue'
 import SearchPage from './pages/SearchPage.vue'
 import WatchSeries from "./pages/watch/WatchSeries.vue";
 import WatchMovie from "./pages/watch/WatchMovie.vue"
+import ManageProfile from "./pages/ManageProfile.vue";
+import ForgotPassword from "./pages/ForgotPassword.vue"
 // import store from "./state/store";
 
 const router = createRouter({
@@ -64,6 +66,18 @@ const router = createRouter({
       component: LoginAccount,
       name: "Login",
       meta: { title: "Login", requiresAuth: false },
+    },
+    {
+      path: "/account",
+      component: ManageProfile,
+      name: "Account",
+      meta: { title: "Account", requiresAuth: true}
+    },
+    {
+      path: "/forgot-password",
+      component: ForgotPassword,
+      name: "Forgot Password",
+      meta: { title: "Forgot Password", requiresAuth: false }
     },
     {
       path: "/movie/:movieId",

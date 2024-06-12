@@ -17,7 +17,7 @@
         Trailer
       </div>
       <div
-        v-if="!!videoLink"
+        v-if="videoLink.length > 0"
         class="video flex flex-wrap justify-center mx-auto"
       >
         <television-trailer
@@ -27,6 +27,7 @@
           :video-key="vid.key"
         ></television-trailer>
       </div>
+      <div class="text-center text-slate-400" v-else>This film does not have any trailers</div>
     </div>
     <div class="season mt-5 p-10">
         <select class="mb-5" v-model="selected" @change="fetchEpisodes">
@@ -64,11 +65,12 @@
       </swiper>
       </div>
     </div>
-    <div v-if="!!actors" class="cast mt-5 p-10">
+    <div class="cast mt-5 p-10">
       <div class="title font-semibold text-5xl mb-5 text-center text-white">
         Actors
       </div>
       <swiper
+        v-if="actors.length > 0"
         :modules="modules"
         :slides-per-view="6"
         :space-between="50"
@@ -87,6 +89,7 @@
           ></television-actors>
         </swiper-slide>
       </swiper>
+      <div class="text-center text-slate-400" v-else>This film does not have data of actors</div>
     </div>
   </main-content>
 </template>

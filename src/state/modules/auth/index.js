@@ -4,7 +4,7 @@ export const authComputed = {
 }
 
 export const authMethods = {
-    ...mapActions('auth/auth', ['register', 'login', 'getCurrentUser', 'logout'])
+    ...mapActions('auth/auth', ['register', 'login', 'getCurrentUser', 'logout', 'updateAccount', 'resetPassword'])
 }
 
 export const authGetters = {

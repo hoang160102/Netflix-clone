@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import {
   getFirestore,
@@ -11,6 +12,7 @@ import {
   setDoc,
   getDocs,
   collection,
+  updateDoc
 } from "firebase/firestore";
 import { useToast } from "vue-toastification";
 import router from "@/router";
@@ -81,38 +83,6 @@ export const actions = {
         toast.error("Email or password is incorrect");
       });
   },
-  // async loginWithGoogle() {
-  //   const provider = new GoogleAuthProvider();
-  //   signInWithPopup(auth, provider)
-  //     .then((result) => {
-  //       // This gives you a Google Access Token. You can use it to access the Google API.
-  //       // const credential = GoogleAuthProvider.credentialFromResult(result);
-  //       // const token = credential.accessToken;
-  //       // The signed-in user info.
-  //       const user = result.user;
-  //       setDoc(doc(db, "users", user.uid), {
-  //         firstName: user.firstName,
-  //         lastName: user.lastName,
-  //         email: user.email,
-  //         password: user.password,
-  //         id: user.uid,
-  //         userList: [],
-  //       });
-  //       // IdP data available using getAdditionalUserInfo(result)
-  //       // ...
-  //     })
-  //     .catch((error) => {
-  //       // Handle Errors here.
-  //       // const errorCode = error.code;
-  //       // const errorMessage = error.message;
-  //       // // The email of the user's account used.
-  //       // const email = error.customData.email;
-  //       // // The AuthCredential type that was used.
-  //       // const credential = GoogleAuthProvider.credentialFromError(error);
-  //       return error;
-  //       // ...
-  //     });
-  // },
   async getCurrentUser({ commit }) {
     const usersCol = collection(db, "users");
     const userSnapshot = await getDocs(usersCol);
@@ -140,13 +110,32 @@ export const actions = {
       router.push({ name: "Login" });
     });
   },
-  // initializeStore({ commit }) {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     commit('setToken', token);
-  //     // Optionally, fetch user data with the token and commit setUser
-  //   }
-  // }
+  async updateAccount(_, user) {
+    const getUserFromDatabase = doc(db, "users", auth.currentUser.uid)
+    try {
+      await updateDoc(getUserFromDatabase, {
+        firstName: user.firstName,
+        lastName: user.lastName,
+      })
+      toast.success('Your account updated')
+      setTimeout(() => {
+        router.push({ name: "Home"})
+      })
+    }
+    catch(error) {
+      toast.error('Update error, please try again')
+    }
+  },
+  async resetPassword(_, email) {
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      toast.success('If your email is existed, you will receive the email')
+    })
+    .catch((error) => {
+      toast.error('Sent email unsuccessfully')
+      return error
+    })
+  }
 };
 
 export const getters = {
