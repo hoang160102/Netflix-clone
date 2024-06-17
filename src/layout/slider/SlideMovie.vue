@@ -19,7 +19,7 @@
     <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
       {{ overview }}
     </div>
-    <div v-if="!!this.genre" class="genres text-gray-400 my-4">
+    <div v-if="getGenre" class="genres text-gray-400 my-4">
       Genres: <span class="text-white">{{ getGenre }}</span>
     </div>
     <div class="flex">

@@ -1,27 +1,32 @@
 <template>
   <main-content>
-    <div class="popular-movie mx-auto px-5 py-5">
-      <h1 class="text-white text-4xl font-light">Popular Movies</h1>
-      <div class="list my-6 flex flex-wrap">
-        <div class="m-5" v-for="movie in commonMovies" :key="movie.id">
-          <movie-list
-          :id="movie.id"
-          :image="movie.poster_path"
-          type="movie"></movie-list>
+    <div class="loading pt-10 flex justify-center" v-if="loading">
+      <v-progress-circular color="red" indeterminate></v-progress-circular>
+    </div>
+    <section v-else>
+      <div class="popular-movie mx-auto px-5 py-5">
+        <h1 class="text-white text-4xl font-light">Popular Movies</h1>
+        <div class="list my-6 flex flex-wrap">
+          <div class="m-5" v-for="movie in commonMovies" :key="movie.id">
+            <movie-list
+            :id="movie.id"
+            :image="movie.poster_path"
+            type="movie"></movie-list>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="popular-tv mx-auto px-5 py-5">
-      <h1 class="text-white text-4xl font-light">Popular TV Shows</h1>
-      <div class="list my-6 flex flex-wrap">
-        <div class="m-5" v-for="movie in commonTv" :key="movie.id">
-          <movie-list
-          :id="movie.id"
-          :image="movie.poster_path"
-          type="tv"></movie-list>
+      <div class="popular-tv mx-auto px-5 py-5">
+        <h1 class="text-white text-4xl font-light">Popular TV Shows</h1>
+        <div class="list my-6 flex flex-wrap">
+          <div class="m-5" v-for="movie in commonTv" :key="movie.id">
+            <movie-list
+            :id="movie.id"
+            :image="movie.poster_path"
+            type="tv"></movie-list>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </main-content>
 </template>
 
@@ -32,7 +37,8 @@ export default {
   data() {
     return {
       commonMovies: [],
-      commonTv: []
+      commonTv: [],
+      loading: false,
     };
   },
   components: {
@@ -44,10 +50,12 @@ export default {
   methods: {
     ...movies.moviesMethods,
     async initial() {
+      this.loading = true
       await this.getPopularMovies();
       await this.getPopularTvShows()
       this.commonMovies = this.popularMovies;
       this.commonTv = this.popularTvShows
+      this.loading = false
     },
   },
   async created() {

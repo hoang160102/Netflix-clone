@@ -39,7 +39,8 @@ export const state = {
   actors: [],
   video: [],
   episodes: [],
-  recommendations: []
+  recommendations: [],
+  filmSearching: []
 };
 
 export const mutations = {
@@ -91,6 +92,9 @@ export const mutations = {
   },
   fetchRecommendations(state, data) {
     state.recommendations = data
+  },
+  fetchSearch(state, data) {
+    state.filmSearching = data
   }
 };
 
@@ -236,5 +240,10 @@ export const actions = {
   async getMovieRecommendations({commit}, id) {
     const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}/recommendations${API_KEY}`)
     commit("fetchRecommendations", result.data.results)
+  },
+  // search 
+  async searchFilm({commit}, query) {
+    const result = await axios.get(`https://api.themoviedb.org/3/search/multi${API_KEY}&query=${query}`)
+    commit("fetchSearch", result.data.results)
   }
 };

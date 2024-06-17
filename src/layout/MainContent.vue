@@ -20,5 +20,6 @@ export default {
 .layout {
   background-color: #1a1a1a;
   min-height: 90vh;
+  margin-top: 70px;
 }
 </style>

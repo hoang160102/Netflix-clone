@@ -2,10 +2,18 @@
     <footer class="p-4 text-white">
       <div class="container mx-auto">
         <div class="flex justify-center space-x-4 mb-4">
-        <router-link to="/" class="text-white hover:text-gray-400"><i class="fab fa-facebook"></i></router-link>
-        <router-link to="/" class="text-white hover:text-gray-400"><i class="fab fa-instagram"></i></router-link>
-        <router-link to="/" class="text-white hover:text-gray-400"><i class="fab fa-twitter"></i></router-link>
-        <router-link to="/" class="text-white hover:text-gray-400"><i class="fab fa-youtube"></i></router-link>
+        <router-link to="/" class="text-white hover:text-gray-400">
+          <svg-icon type="mdi" :path="pathFacbook"></svg-icon>
+        </router-link>
+        <router-link to="/" class="text-white hover:text-gray-400">
+          <svg-icon type="mdi" :path="pathInsta"></svg-icon>
+        </router-link>
+        <router-link to="/" class="text-white hover:text-gray-400">
+          <svg-icon type="mdi" :path="pathTwitter"></svg-icon>
+        </router-link>
+        <router-link to="/" class="text-white hover:text-gray-400">
+          <svg-icon type="mdi" :path="pathPinterest"></svg-icon>
+        </router-link>
       </div>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
         <div>
@@ -38,6 +46,27 @@
       </div>
     </footer>
 </template>
+
+<script>
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiFacebook } from '@mdi/js';
+import { mdiInstagram } from '@mdi/js';
+import { mdiTwitter } from '@mdi/js';
+import { mdiPinterest } from '@mdi/js';
+export default {
+  components: {
+    SvgIcon
+  },
+  data() {
+    return {
+       pathFacbook: mdiFacebook,
+       pathInsta: mdiInstagram,
+       pathTwitter: mdiTwitter,
+       pathPinterest: mdiPinterest
+    }
+  }
+}
+</script>
 
 <style scoped>
 footer {

@@ -14,7 +14,10 @@ import WatchSeries from "./pages/watch/WatchSeries.vue";
 import WatchMovie from "./pages/watch/WatchMovie.vue"
 import ManageProfile from "./pages/ManageProfile.vue";
 import ForgotPassword from "./pages/ForgotPassword.vue"
-// import store from "./state/store";
+import app from "@/firebase/firebase";
+import { getAuth } from "firebase/auth";
+
+const auth = getAuth(app);
 
 const router = createRouter({
   history: createWebHistory(),
@@ -119,13 +122,15 @@ const router = createRouter({
 });
 router.beforeEach((to, _, next) => {
   document.title = `${to.meta.title} | Netflix`;
-  // let loggedIn = store.getters["auth/auth/isLoggedIn"];
-  // console.log(loggedIn)
-  // const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  // if (requiresAuth && !loggedIn) router.push({name: 'StartNow'});
-  // else if (!requiresAuth && loggedIn) next({name: 'Home'});
-  // else next();
   next()
+  const loggedIn = !!auth.currentUser
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if (requiresAuth && !loggedIn) router.push({name: 'StartNow'});
+  else if (!requiresAuth && loggedIn) next({name: 'Home'});
+  else {
+    next();
+    return
+  }
 });
 
 export default router;

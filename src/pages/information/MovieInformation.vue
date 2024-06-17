@@ -1,49 +1,54 @@
 <template>
   <main-content>
-    <banner-movie
-      :detail="detail"
-      :id="detail.id"
-      :image="detail.backdrop_path"
-      :title="detail.title"
-      :rate="detail.vote_average"
-      :overview="detail.overview"
-      :release="detail.release_date"
-      :genre="detail.genres"
-      type="movie"
-    ></banner-movie>
-    <div class="cast mt-5 p-10">
-      <div class="title font-semibold text-5xl mb-5 text-center text-white">Actors</div>
-      <swiper
-        :modules="modules"
-        :slides-per-view="6"
-        :space-between="50"
-        navigation
-        :pagination="{ clickable: true }"
-        :scrollbar="{ draggable: true }"
-        :breakpoints="swiperOptions.breakpoints"
-        class="mySwiper-slide"
-      >
-        <swiper-slide v-for="actor in actors" :key="actor.id">
-          <list-actors
-            :id="actor.id"
-            :profile="actor.profile_path"
-            :name="actor.name"
-            :cast-name="actor.character"
-          ></list-actors>
-        </swiper-slide>
-      </swiper>
+    <div class="loading pt-10 flex justify-center" v-if="loading">
+      <v-progress-circular color="red" indeterminate></v-progress-circular>
     </div>
-    <div class="trailer mt-5 p-10">
-      <div class="title font-semibold text-5xl mb-5 text-center text-white">Trailer</div>
-      <div v-if="!!videoLink" class="video flex flex-wrap justify-center mx-auto">
-        <film-trailer
-          v-for="vid in videoLink"
-          :key="vid.id"
-          :id="vid.id"
-          :video-key="vid.key"
-        ></film-trailer>
+    <section v-else>
+      <banner-movie
+        :detail="detail"
+        :id="detail.id"
+        :image="detail.backdrop_path"
+        :title="detail.title"
+        :rate="detail.vote_average"
+        :overview="detail.overview"
+        :release="detail.release_date"
+        :genre="detail.genres"
+        type="movie"
+      ></banner-movie>
+      <div class="cast mt-5 p-10">
+        <div class="title font-semibold text-5xl mb-5 text-center text-white">Actors</div>
+        <swiper
+          :modules="modules"
+          :slides-per-view="6"
+          :space-between="50"
+          navigation
+          :pagination="{ clickable: true }"
+          :scrollbar="{ draggable: true }"
+          :breakpoints="swiperOptions.breakpoints"
+          class="mySwiper-slide"
+        >
+          <swiper-slide v-for="actor in actors" :key="actor.id">
+            <list-actors
+              :id="actor.id"
+              :profile="actor.profile_path"
+              :name="actor.name"
+              :cast-name="actor.character"
+            ></list-actors>
+          </swiper-slide>
+        </swiper>
       </div>
-    </div>
+      <div class="trailer mt-5 p-10">
+        <div class="title font-semibold text-5xl mb-5 text-center text-white">Trailer</div>
+        <div v-if="!!videoLink" class="video flex flex-wrap justify-center mx-auto">
+          <film-trailer
+            v-for="vid in videoLink"
+            :key="vid.id"
+            :id="vid.id"
+            :video-key="vid.key"
+          ></film-trailer>
+        </div>
+      </div>
+    </section>
   </main-content>
 </template>
 
@@ -75,6 +80,7 @@ export default {
   data() {
     return {
       detail: [],
+      loading: false,
       videoLink: null,
       swiperOptions: {
         breakpoints: {
@@ -108,11 +114,13 @@ export default {
   methods: {
     ...movies.moviesMethods,
     async initial() {
+      this.loading = true;
       await this.getMovieById(this.$route.params.movieId);
       await this.getActors(this.$route.params.movieId);
       await this.getVideo(this.$route.params.movieId)
       this.detail = this.filmDetail;
       this.videoLink = this.video
+      this.loading = false;
     },
   },
   async created() {

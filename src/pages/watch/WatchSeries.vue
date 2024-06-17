@@ -1,6 +1,9 @@
 <template>
   <main-content>
-    <section>
+    <div class="loading pt-10 flex justify-center" v-if="loading">
+      <v-progress-circular color="red" indeterminate></v-progress-circular>
+    </div>
+    <section v-else>
       <div class="watch-movie w-screen pr-4 h-screen">
         <iframe
           :src="`https://player.smashy.stream/tv/${tvshowId}?s=${season}&e=${episode}`"
@@ -10,7 +13,7 @@
         ></iframe>
       </div>
       <div class="season mt-5 p-10">
-        <select class="mb-5" v-model="selected" @change="fetchEpisodes">
+        <select class="mb-5 bg-white" v-model="selected" @change="fetchEpisodes">
           <option disabled value="">Choose season</option>
           <option
             v-for="(item, index) in detail.number_of_seasons"
@@ -62,6 +65,7 @@ export default {
   data() {
     return {
       detail: [],
+      loading: false,
       listEpisodes: null,
       selected: "",
       swiperOptions: {
@@ -125,8 +129,10 @@ export default {
       this.listEpisodes = this.episodes
     },
     async initial() {
+      this.loading = true;
       await this.getTvShowById(this.$route.params.tvId);
       this.detail = this.filmDetail;
+      this.loading = false;
     },
   },
   async created() {

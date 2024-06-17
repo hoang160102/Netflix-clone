@@ -16,7 +16,8 @@ export const moviesComputed = {
     "actors",
     "video",
     "episodes",
-    "recommendations"
+    "recommendations",
+    "filmSearching"
   ]),
 };
 export const moviesMethods = {
@@ -42,6 +43,7 @@ export const moviesMethods = {
     // "addMovieRating",
     // "addTvShowRating"
     "getEpisodes",
-    "getMovieRecommendations"
+    "getMovieRecommendations",
+    "searchFilm"
   ]),
 };

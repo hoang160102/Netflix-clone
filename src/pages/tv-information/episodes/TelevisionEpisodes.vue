@@ -25,18 +25,6 @@ export default {
         query: { season: this.season, ep: this.num}
       };
     },
-    // styleHeight() {
-    //     if (this.overview) {
-    //         return {
-    //             'height': 'auto'
-    //         }
-    //     }
-    //     else {
-    //         return {
-    //             'min-height': '100%'
-    //         }
-    //     }
-    // }
   },
 };
 </script>

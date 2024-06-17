@@ -1,6 +1,9 @@
 <template>
   <main-content>
-    <div class="px-10 py-5">
+    <div class="loading pt-10 flex justify-center" v-if="loading">
+      <v-progress-circular color="red" indeterminate></v-progress-circular>
+    </div>
+    <div v-else class="px-10 py-5">
       <h1 class="text-white text-4xl font-light">My List</h1>
       <div class="list-film my-6 flex flex-wrap">
         <film-card
@@ -24,6 +27,7 @@ export default {
   data() {
     return {
       list: [],
+      loading: false,
     };
   },
   computed: {
@@ -37,8 +41,10 @@ export default {
     },
   },
   async created() {
+    this.loading = true;
     await this.initial();
     this.list = this.fullInfoUser.userList;
+    this.loading = false;
   },
 };
 </script>

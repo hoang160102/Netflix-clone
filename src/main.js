@@ -7,6 +7,16 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import MainContent from "./layout/MainContent.vue";
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
+const vuetify = createVuetify({
+  components,
+  directives,
+})
+
 let app
 const options = {
   position: "top-right",
@@ -29,6 +39,7 @@ onAuthStateChanged(auth, () => {
     app.use(router);
     app.use(store);
     app.use(Toast, options);
+    app.use(vuetify)
     app.component('main-content', MainContent)
     app.mount("#app");
   }

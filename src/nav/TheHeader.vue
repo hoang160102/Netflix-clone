@@ -41,6 +41,7 @@
               :path="pathSearch"
             ></svg-icon>
             <input
+              @keypress.enter="searching"
               type="text"
               class="search-input bg-zinc-700 outline-none text-white"
               placeholder="Titles, characters, genres"
@@ -56,10 +57,15 @@
           class="profile-nav flex items-center"
         >
           <div class="user ml-4">
-            <div v-if="user" class="info bg-slate-500 relative p-2 text-white">{{ standName }}</div>
+            <div
+              v-if="current"
+              class="info bg-slate-500 relative p-2 text-white"
+            >
+              {{ standName }}
+            </div>
             <div class="subnav p-4 bg-slate-800 absolute" :style="display">
               <router-link
-                :to="{ name: 'Account'}"
+                :to="{ name: 'Account' }"
                 class="edit-profile text-white font-extralight text-slate-400 font-sm flex"
               >
                 <svg-icon type="mdi" :path="pathEdit" class="mr-2"></svg-icon>
@@ -93,6 +99,7 @@ import { mdiChevronDown } from "@mdi/js";
 import { mdiAccountBoxEditOutline } from "@mdi/js";
 import { mdiLogout } from "@mdi/js";
 import { auth } from "@/state/helpers";
+import { movies } from "@/state/helpers";
 import router from "@/router";
 export default {
   props: ["email"],
@@ -106,14 +113,15 @@ export default {
       width: "0px",
       border: "none",
       displaySubnav: "none",
-      search: 'search',
-      user: null
+      search: "",
+      current: null,
     };
   },
   components: {
     SvgIcon,
   },
   computed: {
+    ...movies.moviesComputed,
     ...auth.authComputed,
     iconStyle() {
       return {
@@ -133,23 +141,14 @@ export default {
       };
     },
     standName() {
-      return `${this.user.firstName
+      return `${this.current.firstName
         .match(/(\b\S)?/g)
-        .join("")}${this.user.lastName.match(/(\b\S)?/g).join("")}`;
+        .join("")}${this.current.lastName.match(/(\b\S)?/g).join("")}`;
     },
-  },
-  watch: {
-    search(value) {
-      if (value === '') {
-        router.push('/')
-      }
-      else {
-        router.push(`/search/${value}`)
-      }
-    }
   },
   methods: {
     ...auth.authMethods,
+    ...movies.moviesMethods,
     toggleSearchBar() {
       this.width = "250px";
       if (this.width === "250px") {
@@ -174,6 +173,10 @@ export default {
     signOut() {
       this.logout();
     },
+    async searching() {
+      await this.searchFilm(this.search)
+      router.push({ name: 'Search', params: { search: this.search }})
+    },
     async initial() {
       await this.getCurrentUser();
     },
@@ -183,7 +186,7 @@ export default {
   },
   async created() {
     await this.initial();
-    this.user = this.fullInfoUser
+    this.current = this.fullInfoUser;
   },
 };
 </script>
@@ -195,10 +198,10 @@ export default {
 
 header {
   background-color: black;
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 10;
-  max-width: 100vw;
+  width: 100vw;
 }
 
 .header {
