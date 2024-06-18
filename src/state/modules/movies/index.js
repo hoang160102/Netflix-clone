@@ -40,8 +40,8 @@ export const moviesMethods = {
     "getTvActors",
     "getVideo",
     "getTvVideo",
-    // "addMovieRating",
-    // "addTvShowRating"
+    "rateFilms",
+    "removeRate",
     "getEpisodes",
     "getMovieRecommendations",
     "searchFilm"

@@ -53,12 +53,20 @@
         <svg-icon type="mdi" :path="pathMinus"></svg-icon>
         <span>My List</span>
       </button>
-      <!-- <button @click="rating" class="text-white flex items-center ml-3 justify-center py-2 px-4">
+      <button
+        v-if="!isRatedFilm"
+        @click="rating"
+        class="text-white flex items-center ml-3 justify-center py-2 px-4"
+      >
+        <svg-icon type="mdi" :path="pathLike"></svg-icon>
+      </button>
+      <button
+        v-else
+        @click="removeRating"
+        class="text-white text-cyan-600 flex items-center ml-3 justify-center py-2 px-4"
+      >
         <svg-icon type="mdi" :path="pathCancelLike"></svg-icon>
       </button>
-      <button class="text-white text-cyan-600 flex items-center ml-3 justify-center py-2 px-4">
-        <svg-icon type="mdi" :path="pathLike"></svg-icon>
-      </button> -->
     </div>
   </div>
 </template>
@@ -72,8 +80,8 @@ import { auth } from "@/state/helpers";
 import { mdiInformationOutline } from "@mdi/js";
 import { mdiVideoOutline } from "@mdi/js";
 import { mdiPlay } from "@mdi/js";
-// import { mdiThumbUp } from "@mdi/js";
-// import { mdiThumbUpOutline } from "@mdi/js";
+import { mdiThumbUp } from "@mdi/js";
+import { mdiThumbUpOutline } from "@mdi/js";
 export default {
   props: [
     "id",
@@ -95,8 +103,9 @@ export default {
       pathTeaser: mdiVideoOutline,
       pathPlay: mdiPlay,
       pathMinus: mdiMinus,
-      // pathLike: mdiThumbUp,
-      // pathCancelLike: mdiThumbUpOutline,
+      pathLike: mdiThumbUpOutline,
+      pathCancelLike: mdiThumbUp,
+      like: [],
       list: [],
     };
   },
@@ -104,26 +113,24 @@ export default {
     ...movies.moviesComputed,
     ...auth.authComputed,
     urlLink() {
-      if (this.type === 'movie') {
-        return { name: 'MovieDetail', params: { movieId: this.id} }
-      }
-      else {
-        return { name: 'TvShowDetail', params: { tvshowId: this.id} }
+      if (this.type === "movie") {
+        return { name: "MovieDetail", params: { movieId: this.id } };
+      } else {
+        return { name: "TvShowDetail", params: { tvshowId: this.id } };
       }
     },
     watchFilm() {
-      if (this.type === 'tv') {
+      if (this.type === "tv") {
         return {
-        name: "Play TV Show",
-        params: { tvId: this.id },
-        query: { season: 1, ep: 1 },
-        }
-      }
-      else {
+          name: "Play TV Show",
+          params: { tvId: this.id },
+          query: { season: 1, ep: 1 },
+        };
+      } else {
         return {
           name: "Play Movie",
-          params: { movieId: this.id }
-        }
+          params: { movieId: this.id },
+        };
       }
     },
     movieRate() {
@@ -153,18 +160,16 @@ export default {
       });
       return movie;
     },
+    isRatedFilm() {
+      const film = this.like.some((item) => {
+        return item === this.id;
+      });
+      return film;
+    },
   },
   methods: {
     ...movies.moviesMethods,
     ...auth.authMethods,
-    // rating() {
-    //   if (this.type === "movie") {
-    //     this.addMovieRating(this.id)
-    //   }
-    //   else {
-    //     this.addTvShowRating(this.id)
-    //   }
-    // },  
     async callFilmDetail() {
       if (this.type === "movie") {
         await this.getMovieById(this.id);
@@ -174,8 +179,8 @@ export default {
     },
     async addMovie() {
       await this.callFilmDetail();
-      let newDetail = JSON.parse(JSON.stringify(this.filmDetail))
-      newDetail.type = this.type
+      let newDetail = JSON.parse(JSON.stringify(this.filmDetail));
+      newDetail.type = this.type;
       await this.addMovieToList(newDetail);
       await this.inital();
       this.isMovieInList;
@@ -188,9 +193,23 @@ export default {
       this.inital();
       this.isMovieInList;
     },
+    async rating() {
+      await this.rateFilms(this.id);
+      this.inital();
+      this.isRatedFilm;
+    },
+    async removeRating() {
+      const film = await this.like.find((item) => {
+        return item === this.id
+      })
+      await this.removeRate(film)
+      this.inital(),
+      this.isRatedFilm
+    },  
     async inital() {
       await this.getCurrentUser();
       this.list = this.fullInfoUser.userList;
+      this.like = this.fullInfoUser.ratedFilms;
     },
   },
   async created() {

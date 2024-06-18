@@ -36,10 +36,6 @@ export const mutations = {
   infoCurrentUser(state, data) {
     state.fullInfoUser = data;
   },
-  // setToken(state, data) {
-  //   state.token = data
-  //   localStorage.setItem('token', data);
-  // }
 };
 
 export const actions = {
@@ -54,6 +50,7 @@ export const actions = {
           password: newUser.password,
           id: result.user.uid,
           userList: [],
+          ratedFilms: []
         });
         setTimeout(() => {
           router.push({ name: "Login" });
@@ -69,8 +66,6 @@ export const actions = {
     await signInWithEmailAndPassword(auth, user.email, user.password)
       .then(() => {
         toast.success("Login Successfully");
-        // console.log(auth.currentUser.accessToken)
-        // commit(auth.currentUser.accessToken)
         commit("userLoggedIn", {
           email: user.email,
           password: user.password,
@@ -98,6 +93,7 @@ export const actions = {
         email: getUser[0].data().email,
         password: getUser[0].data().password,
         userList: getUser[0].data().userList,
+        ratedFilms: getUser[0].data().ratedFilms
       };
       await commit("infoCurrentUser", currentUser);
     } catch (err) {

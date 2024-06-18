@@ -5,7 +5,7 @@
     </div>
     <div v-else class="px-10 py-5">
       <h1 class="text-white text-4xl font-light">My List</h1>
-      <div class="list-film my-6 flex flex-wrap">
+      <div v-if="list" class="list-film my-6 flex flex-wrap">
         <film-card
           v-for="film in list"
           :key="film.id"
@@ -26,13 +26,12 @@ export default {
   },
   data() {
     return {
-      list: [],
+      list: null,
       loading: false,
     };
   },
   computed: {
     ...auth.authComputed,
-    
   },
   methods: {
     ...auth.authMethods,

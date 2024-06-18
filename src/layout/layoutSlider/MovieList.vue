@@ -36,6 +36,24 @@
           </div>
           <span>My List</span>
         </div>
+        <div
+          class="function mb-3 text-white flex items-center"
+          v-if="!isRatedFilm"
+        >
+          <div @click="rating" class="circle p-2 mr-3">
+            <svg-icon type="mdi" :path="pathLike"> </svg-icon>
+          </div>
+          <span>Rate</span>
+        </div>
+        <div
+          v-else
+          class="function mb-3 text-white flex items-center"
+        >
+          <div @click="removeRating" class="circle p-2 mr-3">
+            <svg-icon type="mdi" :path="pathLike"> </svg-icon>
+          </div>
+          <span>Unrate</span>
+        </div>
       </div>
     </div>
   </div>
@@ -48,6 +66,8 @@ import { mdiPlay } from "@mdi/js";
 import { mdiPlus } from "@mdi/js";
 import { mdiMinus } from "@mdi/js";
 import { mdiInformationVariant } from "@mdi/js";
+import { mdiThumbUp } from "@mdi/js";
+import { mdiThumbUpOutline } from "@mdi/js";
 import { movies } from "@/state/helpers";
 import { auth } from "@/state/helpers";
 export default {
@@ -62,7 +82,10 @@ export default {
       pathPlus: mdiPlus,
       pathInfo: mdiInformationVariant,
       pathMinus: mdiMinus,
+      pathLike: mdiThumbUpOutline,
+      pathCancelLike: mdiThumbUp,
       list: [],
+      like: []
     };
   },
   computed: {
@@ -97,6 +120,12 @@ export default {
         }
       }
     },
+    isRatedFilm() {
+      const film = this.like.some((item) => {
+        return item === this.id;
+      });
+      return film;
+    },
   },
   methods: {
     ...movies.moviesMethods,
@@ -124,9 +153,23 @@ export default {
       this.initial();
       this.isMovieInList;
     },
+    async rating() {
+      await this.rateFilms(this.id);
+      this.initial();
+      this.isRatedFilm;
+    },
+    async removeRating() {
+      const film = await this.like.find((item) => {
+        return item === this.id
+      })
+      await this.removeRate(film)
+      this.initial(),
+      this.isRatedFilm
+    },  
     async initial() {
       await this.getCurrentUser();
       this.list = this.fullInfoUser.userList;
+      this.like = this.fullInfoUser.ratedFilms;
     },
   },
   async created() {

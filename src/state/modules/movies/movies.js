@@ -11,17 +11,6 @@ import {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// const options = {
-//   method: "POST",
-//   headers: {
-//     accept: "application/json",
-//     "Content-Type": "application/json;charset=utf-8",
-//     Authorization:
-//       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MTZmZTMxOWQzNmYxYmFlYmRlYjU5YzhlMzE1NmRjNSIsInN1YiI6IjY2NDViMjFiMDdmOTg5MTFkNTk1MzQ5ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k7WXuBj-_qJnRJIAvd7glZunlTquoVR4TDFEz5exBJQ",
-//   },
-//   body: '"like"'
-// };
-
 const API_KEY = "?api_key=716fe319d36f1baebdeb59c8e3156dc5";
 export const state = {
   movieList: [],
@@ -40,7 +29,7 @@ export const state = {
   video: [],
   episodes: [],
   recommendations: [],
-  filmSearching: []
+  filmSearching: [],
 };
 
 export const mutations = {
@@ -88,14 +77,14 @@ export const mutations = {
     state.video = data;
   },
   fetchEpisodes(state, data) {
-    state.episodes = data
+    state.episodes = data;
   },
   fetchRecommendations(state, data) {
-    state.recommendations = data
+    state.recommendations = data;
   },
   fetchSearch(state, data) {
-    state.filmSearching = data
-  }
+    state.filmSearching = data;
+  },
 };
 
 export const actions = {
@@ -211,39 +200,38 @@ export const actions = {
     );
     commit("fetchVideo", result.data.results.splice(0, 3));
   },
-  // add rating
-  // async addMovieRating(_, id) {
-  //   await fetch(
-  //     `https://api.themoviedb.org/3/movie/${id}/rating${API_KEY}`, {
-  //       options,
-  //     }
-  //   )
-  //     .then((response) => response.json())
-  //     .then((response) => console.log(response))
-  //     .catch((err) => console.error(err));
-  // },
-  // async addTvShowRating(_, id) {
-  //   const result = await axios.post(
-  //     `https://api.themoviedb.org/3/tv/${id}/rating${API_KEY}`,
-  //     {
-  //       headers: headers,
-  //     }
-  //   );
-  //   console.log(result);
-  // },
   // episode
-  async getEpisodes( {commit}, data) {
-    const result = await axios.get(`https://api.themoviedb.org/3/tv/${data.id}/season/${data.ss}${API_KEY}`)
-    commit('fetchEpisodes', result.data.episodes)
+  async getEpisodes({ commit }, data) {
+    const result = await axios.get(
+      `https://api.themoviedb.org/3/tv/${data.id}/season/${data.ss}${API_KEY}`
+    );
+    commit("fetchEpisodes", result.data.episodes);
   },
   //get recommnedations
-  async getMovieRecommendations({commit}, id) {
-    const result = await axios.get(`https://api.themoviedb.org/3/movie/${id}/recommendations${API_KEY}`)
-    commit("fetchRecommendations", result.data.results)
+  async getMovieRecommendations({ commit }, id) {
+    const result = await axios.get(
+      `https://api.themoviedb.org/3/movie/${id}/recommendations${API_KEY}`
+    );
+    commit("fetchRecommendations", result.data.results);
   },
-  // search 
-  async searchFilm({commit}, query) {
-    const result = await axios.get(`https://api.themoviedb.org/3/search/multi${API_KEY}&query=${query}`)
-    commit("fetchSearch", result.data.results)
+  // search
+  async searchFilm({ commit }, query) {
+    const result = await axios.get(
+      `https://api.themoviedb.org/3/search/multi${API_KEY}&query=${query}`
+    );
+    commit("fetchSearch", result.data.results);
+  },
+  //add rating
+  async rateFilms(_, id) {
+    const userListRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userListRef, {
+      ratedFilms: arrayUnion(id),
+    });
+  },
+  async removeRate(_, id) {
+    const userListRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userListRef, {
+      ratedFilms: arrayRemove(id),
+    });
   }
 };

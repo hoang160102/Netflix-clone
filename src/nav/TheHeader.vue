@@ -174,8 +174,8 @@ export default {
       this.logout();
     },
     async searching() {
-      await this.searchFilm(this.search)
-      router.push({ name: 'Search', params: { search: this.search }})
+      await this.searchFilm(this.search);
+      router.push({ name: "Search", params: { search: this.search } });
     },
     async initial() {
       await this.getCurrentUser();
