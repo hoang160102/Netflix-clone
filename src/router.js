@@ -14,6 +14,7 @@ import WatchSeries from "./pages/watch/WatchSeries.vue";
 import WatchMovie from "./pages/watch/WatchMovie.vue"
 import ManageProfile from "./pages/ManageProfile.vue";
 import ForgotPassword from "./pages/ForgotPassword.vue"
+import NotFound from "./pages/NotFound.vue"
 import app from "@/firebase/firebase";
 import { getAuth } from "firebase/auth";
 
@@ -111,6 +112,11 @@ const router = createRouter({
       component: WatchMovie,
       name: "Play Movie",
       meta: { title: "Play", requiresAuth: true }
+    },
+    {
+      path: "/:notFound(.*)",
+      component: NotFound,
+      meta: { title: "Not Found", requiresAuth: true }
     }
   ],
   scrollBehavior(to, from, savedPos) {
