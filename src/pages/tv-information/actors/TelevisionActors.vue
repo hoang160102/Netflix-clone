@@ -7,10 +7,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ["profile", "id", "name", "castName"],
-};
+<script setup>
+import { defineProps } from 'vue';
+defineProps({
+  profile: String,
+  id: Number,
+  name: String,
+  castName: String
+})
 </script>
 
 <style scoped>

@@ -1,7 +1,8 @@
 <template>
     <router-link :to="watchEpisode">
         <div class="episode relative">
-          <img :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
+          <img v-if="image" :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
+          <img v-else :src="`https://image.tmdb.org/t/p/original${backdrop}`" alt="">
           <div class="cover absolute overflow-hidden top-0 left-0">
               <div class="ep-info left-0 mt-2 px-2">
                 <div class="title text-sm text-white">
@@ -16,7 +17,7 @@
 
 <script>
 export default {
-  props: ["image", "id", "num", "name", "overview", 'season', 'seriesId'],
+  props: ["image", "id", "num", "name", "overview", 'season', 'seriesId', 'backdrop'],
   computed: {
     watchEpisode() {
       return {

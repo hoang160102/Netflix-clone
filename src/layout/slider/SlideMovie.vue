@@ -27,14 +27,14 @@
         :to="watchFilm"
         class="info mr-4 text-white flex items-center justify-center py-2 px-5"
       >
-        <svg-icon type="mdi" :path="pathPlay"></svg-icon>
+        <svg-icon type="mdi" :path="mdiPlay"></svg-icon>
         <span class="ml-2">Play</span>
       </router-link>
       <router-link
         :to="urlLink"
         class="info mr-4 text-white flex items-center justify-center py-2 px-5"
       >
-        <svg-icon type="mdi" :path="pathInfo"></svg-icon>
+        <svg-icon type="mdi" :path="mdiInformationVariant"></svg-icon>
         <span class="ml-2">Info</span>
       </router-link>
       <button
@@ -42,7 +42,7 @@
         @click="addMovie"
         class="text-white add flex items-center justify-center py-2 px-4"
       >
-        <svg-icon type="mdi" :path="pathPlus"></svg-icon>
+        <svg-icon type="mdi" :path="mdiPlus"></svg-icon>
         <span>My List</span>
       </button>
       <button
@@ -50,7 +50,7 @@
         @click="removeMovie"
         class="text-white remove flex items-center justify-center py-2 px-4"
       >
-        <svg-icon type="mdi" :path="pathMinus"></svg-icon>
+        <svg-icon type="mdi" :path="mdiMinus"></svg-icon>
         <span>My List</span>
       </button>
       <button
@@ -58,164 +58,61 @@
         @click="rating"
         class="text-white flex items-center ml-3 justify-center py-2 px-4"
       >
-        <svg-icon type="mdi" :path="pathLike"></svg-icon>
+        <svg-icon type="mdi" :path="mdiThumbUpOutline"></svg-icon>
       </button>
       <button
         v-else
         @click="removeRating"
         class="text-white text-cyan-600 flex items-center ml-3 justify-center py-2 px-4"
       >
-        <svg-icon type="mdi" :path="pathCancelLike"></svg-icon>
+        <svg-icon type="mdi" :path="mdiThumbUp"></svg-icon>
       </button>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import SvgIcon from "@jamescoyle/vue-icon";
+import { mdiPlay } from "@mdi/js";
 import { mdiPlus } from "@mdi/js";
 import { mdiMinus } from "@mdi/js";
-import { movies } from "@/state/helpers";
-import { auth } from "@/state/helpers";
-import { mdiInformationOutline } from "@mdi/js";
-import { mdiVideoOutline } from "@mdi/js";
-import { mdiPlay } from "@mdi/js";
+import { mdiInformationVariant } from "@mdi/js";
 import { mdiThumbUp } from "@mdi/js";
 import { mdiThumbUpOutline } from "@mdi/js";
-export default {
-  props: [
-    "id",
-    "image",
-    "title",
-    "rate",
-    "overview",
-    "release",
-    "genre",
-    "type",
-  ],
-  components: {
-    SvgIcon,
-  },
-  data() {
-    return {
-      pathPlus: mdiPlus,
-      pathInfo: mdiInformationOutline,
-      pathTeaser: mdiVideoOutline,
-      pathPlay: mdiPlay,
-      pathMinus: mdiMinus,
-      pathLike: mdiThumbUpOutline,
-      pathCancelLike: mdiThumbUp,
-      like: [],
-      list: [],
-    };
-  },
-  computed: {
-    ...movies.moviesComputed,
-    ...auth.authComputed,
-    urlLink() {
-      if (this.type === "movie") {
-        return { name: "MovieDetail", params: { movieId: this.id } };
-      } else {
-        return { name: "TvShowDetail", params: { tvshowId: this.id } };
-      }
-    },
-    watchFilm() {
-      if (this.type === "tv") {
-        return {
-          name: "Play TV Show",
-          params: { tvId: this.id },
-          query: { season: 1, ep: 1 },
-        };
-      } else {
-        return {
-          name: "Play Movie",
-          params: { movieId: this.id },
-        };
-      }
-    },
-    movieRate() {
-      return (this.rate * 10).toFixed(2);
-    },
-    movieRateColor() {
-      const percent = this.rate * 10;
-      if (percent < 50) return "text-red-600";
-      if (percent < 70) return "text-yellow-400";
-      return "text-emerald-500";
-    },
-    releaseDate() {
-      return this.release.replace(/-/g, "/");
-    },
-    getGenre() {
-      return this.genre
-        .map((id) => {
-          const filmGenre = this.genres.find((kind) => kind.id === id);
-          return filmGenre ? filmGenre.name : null;
-        })
-        .filter((name) => name !== null)
-        .join(", ");
-    },
-    isMovieInList() {
-      const movie = this.list.some((film) => {
-        return this.id === film.id;
-      });
-      return movie;
-    },
-    isRatedFilm() {
-      const film = this.like.some((item) => {
-        return item === this.id;
-      });
-      return film;
-    },
-  },
-  methods: {
-    ...movies.moviesMethods,
-    ...auth.authMethods,
-    async callFilmDetail() {
-      if (this.type === "movie") {
-        await this.getMovieById(this.id);
-      } else {
-        await this.getTvShowById(this.id);
-      }
-    },
-    async addMovie() {
-      await this.callFilmDetail();
-      let newDetail = JSON.parse(JSON.stringify(this.filmDetail));
-      newDetail.type = this.type;
-      await this.addMovieToList(newDetail);
-      await this.inital();
-      this.isMovieInList;
-    },
-    async removeMovie() {
-      const movie = await this.list.find((film) => {
-        return this.id === film.id;
-      });
-      await this.removeMovieFromList(movie);
-      this.inital();
-      this.isMovieInList;
-    },
-    async rating() {
-      await this.rateFilms(this.id);
-      this.inital();
-      this.isRatedFilm;
-    },
-    async removeRating() {
-      const film = await this.like.find((item) => {
-        return item === this.id
-      })
-      await this.removeRate(film)
-      this.inital(),
-      this.isRatedFilm
-    },  
-    async inital() {
-      await this.getCurrentUser();
-      this.list = this.fullInfoUser.userList;
-      this.like = this.fullInfoUser.ratedFilms;
-    },
-  },
-  async created() {
-    await this.inital();
-  },
-};
+import { ref, defineProps } from "vue";
+import { useStore } from "vuex";
+import useAddFilms from "@/composables/useFilmActions";
+import infoFilm from "@/composables/useFilmBanner";
+const props = defineProps({
+  id: Number,
+  image: String,
+  title: String,
+  rate: Number,
+  overview: String,
+  release: String,
+  genre: Array,
+  type: String,
+});
+const store = useStore();
+const list = ref([...store.state.auth.auth.fullInfoUser.userList]);
+const like = ref([...store.state.auth.auth.fullInfoUser.ratedFilms]);
+
+const {
+  isMovieInList,
+  isRatedFilm,
+  addMovie,
+  removeMovie,
+  rating,
+  removeRating,
+  urlLink,
+  watchFilm,
+} = useAddFilms(list, like, props.id, props.type);
+
+const { movieRate, movieRateColor, releaseDate, getGenre } = infoFilm(
+  props.rate,
+  props.release,
+  props.genre
+);
 </script>
 
 <style scoped>

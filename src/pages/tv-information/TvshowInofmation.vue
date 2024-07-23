@@ -44,7 +44,7 @@
               Season {{ index + 1 }}
             </option>
           </select>
-        <div v-if="!!listEpisodes" class="list-ep">
+        <div class="list-ep">
           <swiper
           :modules="modules"
           :slides-per-view="6"
@@ -64,6 +64,7 @@
               :name="ep.name"
               :overview="ep.overview"
               :season="selected"
+              :backdrop="detail.backdrop_path"
             ></television-episodes>
           </swiper-slide>
         </swiper>

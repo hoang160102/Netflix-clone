@@ -11,13 +11,13 @@
       <div class="video-func absolute left-1/2 top-1/2">
         <div class="function w-full mb-3 text-white flex items-center">
           <router-link :to="urlLink" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathInfo"></svg-icon>
+            <svg-icon type="mdi" :path="mdiInformationVariant"></svg-icon>
           </router-link>
           <span>Info</span>
         </div>
         <div class="function mb-3 text-white flex items-center">
           <router-link :to="watchFilm" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathPlay"></svg-icon>
+            <svg-icon type="mdi" :path="mdiPlay"></svg-icon>
           </router-link>
           <span>Play</span>
         </div>
@@ -26,13 +26,13 @@
           class="function mb-3 text-white flex items-center"
         >
           <div @click="addMovie" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathPlus"> </svg-icon>
+            <svg-icon type="mdi" :path="mdiPlus"> </svg-icon>
           </div>
           <span>My List</span>
         </div>
         <div v-else class="function mb-3 text-white flex items-center">
           <div @click="removeMovie" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathMinus"> </svg-icon>
+            <svg-icon type="mdi" :path="mdiMinus"> </svg-icon>
           </div>
           <span>My List</span>
         </div>
@@ -41,16 +41,13 @@
           v-if="!isRatedFilm"
         >
           <div @click="rating" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathLike"> </svg-icon>
+            <svg-icon type="mdi" :path="mdiThumbUpOutline"> </svg-icon>
           </div>
           <span>Rate</span>
         </div>
-        <div
-          v-else
-          class="function mb-3 text-white flex items-center"
-        >
+        <div v-else class="function mb-3 text-white flex items-center">
           <div @click="removeRating" class="circle p-2 mr-3">
-            <svg-icon type="mdi" :path="pathLike"> </svg-icon>
+            <svg-icon type="mdi" :path="mdiThumbUp"> </svg-icon>
           </div>
           <span>Unrate</span>
         </div>
@@ -59,138 +56,47 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiVideoOutline } from "@mdi/js";
 import { mdiPlay } from "@mdi/js";
 import { mdiPlus } from "@mdi/js";
 import { mdiMinus } from "@mdi/js";
 import { mdiInformationVariant } from "@mdi/js";
 import { mdiThumbUp } from "@mdi/js";
 import { mdiThumbUpOutline } from "@mdi/js";
-import { movies } from "@/state/helpers";
-import { auth } from "@/state/helpers";
-export default {
-  props: ["image", "id", "type"],
-  components: {
-    SvgIcon,
-  },
-  data() {
-    return {
-      pathTeaser: mdiVideoOutline,
-      pathPlay: mdiPlay,
-      pathPlus: mdiPlus,
-      pathInfo: mdiInformationVariant,
-      pathMinus: mdiMinus,
-      pathLike: mdiThumbUpOutline,
-      pathCancelLike: mdiThumbUp,
-      list: [],
-      like: []
-    };
-  },
-  computed: {
-    ...movies.moviesComputed,
-    ...auth.authComputed,
-    isMovieInList() {
-      const movie = this.list.some((film) => {
-        return this.id === film.id;
-      });
-      return movie;
-    },
-    urlLink() {
-      if (this.type === 'movie') {
-        return { name: 'MovieDetail', params: { movieId: this.id } }
-      }
-      else {
-        return { name: 'TvShowDetail', params: { tvshowId: this.id } }
-      }
-    },
-    watchFilm() {
-      if (this.type === 'tv') {
-        return {
-        name: "Play TV Show",
-        params: { tvId: this.id },
-        query: { season: 1, ep: 1 },
-        }
-      }
-      else {
-        return {
-          name: "Play Movie",
-          params: { movieId: this.id }
-        }
-      }
-    },
-    isRatedFilm() {
-      const film = this.like.some((item) => {
-        return item === this.id;
-      });
-      return film;
-    },
-  },
-  methods: {
-    ...movies.moviesMethods,
-    ...auth.authMethods,
-    async callFilmDetail() {
-      if (this.type === "movie") {
-        await this.getMovieById(this.id);
-      } else {
-        await this.getTvShowById(this.id);
-      }
-    },
-    async addMovie() {
-      await this.callFilmDetail();
-      let newDetail = JSON.parse(JSON.stringify(this.filmDetail))
-      newDetail.type = this.type
-      await this.addMovieToList(newDetail);
-      await this.initial();
-      this.isMovieInList;
-    },
-    async removeMovie() {
-      const movie = await this.list.find((film) => {
-        return this.id === film.id;
-      });
-      await this.removeMovieFromList(movie);
-      this.initial();
-      this.isMovieInList;
-    },
-    async rating() {
-      await this.rateFilms(this.id);
-      this.initial();
-      this.isRatedFilm;
-    },
-    async removeRating() {
-      const film = await this.like.find((item) => {
-        return item === this.id
-      })
-      await this.removeRate(film)
-      this.initial(),
-      this.isRatedFilm
-    },  
-    async initial() {
-      await this.getCurrentUser();
-      this.list = this.fullInfoUser.userList;
-      this.like = this.fullInfoUser.ratedFilms;
-    },
-  },
-  async created() {
-    await this.initial();
-  },
-};
+import { defineProps, ref } from "vue";
+import useAddFilms from "@/composables/useFilmActions";
+import { useStore } from "vuex";
+const store = useStore();
+const props = defineProps({
+  image: String,
+  id: Number,
+  type: String,
+});
+const list = ref([...store.state.auth.auth.fullInfoUser.userList]);
+const like = ref([...store.state.auth.auth.fullInfoUser.ratedFilms]);
+const { isMovieInList,
+    isRatedFilm,
+    urlLink,
+    watchFilm,
+    addMovie,
+    removeMovie,
+    rating,
+    removeRating } = useAddFilms(list, like, props.id, props.type)
 </script>
 
 <style scoped>
 .film {
-  max-height: 350px;
   transition: all 0.5s ease;
 }
 
 img {
   border-radius: 10px;
-  max-height: 320px;
+  height: 100%;
 }
 
 .film:hover {
-  scale: 1.2;
+  scale: 1.1;
 }
 
 .cover {

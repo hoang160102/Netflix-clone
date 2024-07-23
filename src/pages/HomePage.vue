@@ -49,35 +49,34 @@
 <script>
 import SliderBanner from "@/layout/slider/SliderBanner.vue";
 import MovieSlider from "@/layout/layoutSlider/MovieSlider.vue";
-import { auth } from "@/state/helpers";
-import { movies } from "@/state/helpers";
+// import { auth } from "@/state/helpers";
+// import { movies } from "@/state/helpers";
+import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 export default {
   components: {
     SliderBanner,
     MovieSlider,
   },
-  data() {
-    return {
-      loading: false,
-    };
-  },
-  computed: {
-    ...auth.authComputed,
-    ...movies.moviesComputed,
-  },
-  methods: {
-    ...auth.authMethods,
-    ...movies.moviesMethods,
-    async initial() {
-      this.loading = true;
-      await this.getCurrentUser();
-      await this.getAllMovies();
-      this.loading = false;
-    },
-  },
-  async created() {
-    await this.initial();
-  },
+  setup() {
+    const store = useStore();
+
+    const loading = ref(true);
+
+    // const authComputed = auth.authComputed;
+    // const moviesComputed = movies.moviesComputed;
+
+    const getCurrentUser = () => store.dispatch("auth/auth/getCurrentUser");
+    const getAllMovies = () => store.dispatch("movies/movies/getAllMovies");
+
+    onMounted(() => {
+      // Simulate an API call to get the user and movies
+      Promise.all([getCurrentUser(), getAllMovies()]).then(() => {
+        loading.value = false;
+      });
+    });
+    return { loading }
+  }
 };
 </script>
 <style scoped></style>

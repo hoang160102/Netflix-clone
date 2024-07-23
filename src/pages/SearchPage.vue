@@ -44,7 +44,6 @@ export default {
       this.loading = true;
       await this.searchFilm(this.$route.params.search);
       this.searchedFilm = this.filmSearching;
-      console.log(this.searchedFilm)
       this.loading = false;
     },
   },

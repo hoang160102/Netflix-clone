@@ -128,7 +128,6 @@ const router = createRouter({
 });
 router.beforeEach((to, _, next) => {
   document.title = `${to.meta.title} | Netflix`;
-  next()
   const loggedIn = !!auth.currentUser
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   if (requiresAuth && !loggedIn) router.push({name: 'StartNow'});

@@ -13,7 +13,7 @@
       :breakpoints="swiperOptions.breakpoints"
       class="mySwiper-slide"
     >
-      <swiper-slide v-for="movie in movies" :key="movie.id">
+      <swiper-slide class="flex" v-for="(movie) in movies" :key="movie.id">
         <movie-list :id="movie.id" :image="movie.poster_path" :type="type"></movie-list>
       </swiper-slide>
     </swiper>
@@ -22,67 +22,74 @@
 
 <script>
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
-
-// Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { movies } from "@/state/helpers";
-// Import Swiper styles
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import MovieList from "./MovieList.vue";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
-import MovieList from "./MovieList.vue";
-// Import Swiper styles
 export default {
-  props: ["category-title", "request-url", "media-type"],
-  data() {
-    return {
-      movies: [],
-      swiperOptions: {
-        breakpoints: {
-          500: {
-            slidesPerView: 3,
-            slidesPerGroup: 2,
-          },
-          800: {
-            slidesPerView: 4,
-            slidesPerGroup: 3,
-          },
-          1100: {
-            slidesPerView: 5,
-            slidesPerGroup: 4,
-          },
-          1400: {
-            slidesPerView: 6,
-            slidesPerGroup: 5,
-          },
-        },
-      },
-    };
+  props: {
+    categoryTitle: {
+      type: String,
+      required: true,
+    },
+    requestUrl: {
+      type: String,
+      required: true,
+    },
+    mediaType: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     Swiper,
     SwiperSlide,
     MovieList,
   },
-  setup() {
-    return {
-      modules: [Navigation, Pagination, Scrollbar, A11y],
+  setup(props) {
+    const store = useStore();
+    const movies = ref([]);
+    const modules = [Navigation, Pagination, Scrollbar, A11y];
+    const swiperOptions = {
+      breakpoints: {
+        700: {
+          slidesPerView: 3,
+          slidesPerGroup: 2,
+        },
+        1000: {
+          slidesPerView: 4,
+          slidesPerGroup: 3,
+        },
+        1300: {
+          slidesPerView: 5,
+          slidesPerGroup: 4,
+        },
+        1600: {
+          slidesPerView: 6,
+          slidesPerGroup: 5,
+        },
+      },
     };
-  },
-  computed: {
-    ...movies.moviesComputed,
-    type() {
-      return this.mediaType
-    }
-  },
-  methods: {
-    ...movies.moviesMethods,
-  },
-  async created() {
-    await this.getMovieSlide(this.requestUrl);
-    this.movies = this.movieSlide;
+
+    const type = computed(() => props.mediaType);
+
+    const getMovieSlide = async (url) => {
+      await store.dispatch("movies/movies/getMovieSlide", url);
+      movies.value = store.state.movies.movies.movieSlide;
+    };
+    getMovieSlide(props.requestUrl)
+    return {
+      movies,
+      modules,
+      swiperOptions,
+      type,
+      getMovieSlide,
+    };
   },
 };
 </script>

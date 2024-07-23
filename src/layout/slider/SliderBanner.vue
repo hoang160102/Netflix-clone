@@ -11,7 +11,7 @@
     :modules="modules"
     class="mySwiper-banner w-full"
   >
-    <swiper-slide class="relative" v-for="movie in movieBanner" :key="movie.id">
+    <swiper-slide class="relative" v-for="movie in banner" :key="movie.id">
       <slide-movie
         :id="movie.id"
         :image="movie.backdrop_path"
@@ -37,8 +37,9 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Autoplay, Pagination } from "swiper/modules";
-import { movies } from "@/state/helpers";
 import SlideMovie from "./SlideMovie.vue";
+import { ref } from "vue";
+import { useStore } from "vuex";
 export default {
   components: {
     Swiper,
@@ -46,19 +47,17 @@ export default {
     SlideMovie,
   },
   setup() {
+    const store = useStore()
+    const banner = ref([])
+    const getBannerMovies = async () => {
+      await store.dispatch("movies/movies/getBannerMovies")
+      banner.value = store.state.movies.movies.movieBanner
+    }
+    getBannerMovies()
     return {
       modules: [Autoplay, Pagination],
+      banner
     };
-  },
-  computed: {
-    ...movies.moviesComputed,
-  },
-  methods: {
-    ...movies.moviesMethods,
-  },
-  async created() {
-    await this.getBannerMovies();
-    this.getAllGerne()
   },
 };
 </script>

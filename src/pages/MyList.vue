@@ -5,14 +5,20 @@
     </div>
     <div v-else class="px-10 py-5">
       <h1 class="text-white text-4xl font-light">My List</h1>
-      <div v-if="list" class="list-film my-6 flex flex-wrap">
-        <film-card
-          v-for="film in list"
-          :key="film.id"
-          :id="film.id"
-          :image="film.poster_path"
-          :type="film.type"
-        ></film-card>
+      <div v-if="list" class="list-film my-6">
+        <draggable
+          v-model="list"
+          :options="{ group: 'films', animation: 200 }"
+          class="flex flex-wrap"
+          >
+          <div v-for="film in list" :key="film.id">
+            <film-card
+              :id="film.id"
+              :image="film.poster_path"
+              :type="film.type"
+            ></film-card>
+          </div>
+        </draggable>
       </div>
     </div>
   </main-content>
@@ -20,9 +26,11 @@
 <script>
 import { auth } from "@/state/helpers";
 import FilmCard from "@/layout/userList/FilmCard.vue";
+import { VueDraggableNext } from 'vue-draggable-next'
 export default {
   components: {
     FilmCard,
+    draggable: VueDraggableNext
   },
   data() {
     return {

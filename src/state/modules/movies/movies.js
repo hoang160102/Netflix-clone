@@ -33,10 +33,6 @@ export const state = {
 };
 
 export const mutations = {
-  //   fetchMovieList(state, data) {
-  //     state.movieList = data;
-  //     console.log(state.movieList)
-  //   },
   fetchAllMovies(state, data) {
     state.allMovies = data;
   },
@@ -235,3 +231,9 @@ export const actions = {
     });
   }
 };
+
+export const getters = {
+  myList(state) {
+    return state.filmList
+  }
+}
