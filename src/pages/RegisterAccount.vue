@@ -94,46 +94,36 @@
   </section>
 </template>
 
-<script>
-import { auth } from '@/state/helpers';
-export default {
-  data() {
-    return {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    };
-  },
-  computed: {
-    ...auth.authComputed,
-    isFormValid() {
-      return (
-        this.password.length >= 6 &&
-        /[A-Z]/.test(this.password) &&
-        /[a-z]/.test(this.password) &&
-        /^[A-Za-z0-9]*$/.test(this.password) &&
-        this.password === this.confirmPassword &&
-        this.email.length > 1 &&
-        this.firstName.length >= 1 &&
-        this.lastName.length >= 1 
-      );
-    },
-  },
-  methods: {
-    ...auth.authMethods,
-    submitForm() {
-      if (this.isFormValid) {
-        this.register({
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password
-        })
-      }
-    },
-  },
+<script setup>
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const isFormValid = computed(() => {
+  return (
+    password.value.length >= 6 &&
+    /[A-Z]/.test(password.value) &&
+    /[a-z]/.test(password.value) &&
+    /^[A-Za-z0-9]*$/.test(password.value) &&
+    password.value === confirmPassword.value &&
+    email.value.length > 1 &&
+    firstName.value.length >= 1 &&
+    lastName.value.length >= 1
+  );
+});
+const submitForm = () => {
+  if (isFormValid.value) {
+    store.dispatch("auth/auth/register", {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+    });
+  }
 };
 </script>
 

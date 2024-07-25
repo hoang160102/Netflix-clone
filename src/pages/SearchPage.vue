@@ -5,7 +5,7 @@
     </div>
     <div v-else class="search mx-auto px-5 py-5">
       <h1 class="text-white text-4xl font-light">Search</h1>
-      <div v-if="searchedFilm.length > 2" class="list my-6 flex flex-wrap">
+      <div v-if="searchedFilm && searchedFilm.length > 2" class="list my-6 flex flex-wrap">
         <div class="film" v-for="movie in searchedFilm" :key="movie.id">
           <div class="m-5" v-if="movie.poster_path">
             <movie-list
@@ -21,36 +21,24 @@
   </main-content>
 </template>
 
-<script>
-import { movies } from "@/state/helpers";
+<script setup>
 import MovieList from "@/layout/layoutSlider/MovieList.vue";
-// import router from "@/router";
-export default {
-  components: {
-    MovieList,
-  },
-  data() {
-    return {
-      searchedFilm: null,
-      loading: false,
-    };
-  },
-  computed: {
-    ...movies.moviesComputed,
-  },
-  methods: {
-    ...movies.moviesMethods,
-    async initial() {
-      this.loading = true;
-      await this.searchFilm(this.$route.params.search);
-      this.searchedFilm = this.filmSearching;
-      this.loading = false;
-    },
-  },
-  async created() {
-    await this.initial();
-  },
-};
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+const store = useStore()
+const route = useRoute()
+const searchedFilm = ref(null)
+const loading = ref(true)
+const initial = async () => {
+  await store.dispatch('movies/movies/searchFilm', route.params.search)
+  searchedFilm.value = store.state.movies.movies.filmSearching
+}
+onMounted(() => {
+  Promise.all([initial()]).then(() => {
+    loading.value = false
+  })
+})
 </script>
 
 <style scoped>

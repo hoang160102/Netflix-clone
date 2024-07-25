@@ -98,7 +98,7 @@ export const actions = {
     const data = result.data.results;
     commit("fetchAllMovies", data);
   },
-  async getAllGerne({ commit }) {
+  async getAllGenre({ commit }) {
     const result = await axios.get(
       "https://api.themoviedb.org/3/genre/movie/list" + API_KEY
     );

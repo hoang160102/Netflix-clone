@@ -4,8 +4,7 @@
       <v-progress-circular color="red" indeterminate></v-progress-circular>
     </div>
     <section v-else>
-      <banner-movie
-        :detail="detail"
+      <slide-movie
         :id="detail.id"
         :image="detail.backdrop_path"
         :title="detail.title"
@@ -14,7 +13,7 @@
         :release="detail.release_date"
         :genre="detail.genres"
         type="movie"
-      ></banner-movie>
+      ></slide-movie>
       <div class="cast mt-5 p-10">
         <div class="title font-semibold text-5xl mb-5 text-center text-white">Actors</div>
         <swiper
@@ -54,7 +53,7 @@
 
 <script>
 import { movies } from "@/state/helpers";
-import BannerMovie from "./banner/BannerMovie.vue";
+import { auth } from "@/state/helpers";
 import ListActors from "./actors/ListActors.vue";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -64,9 +63,10 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import FilmTrailer from './trailer/MovieTrailer.vue'
+import SlideMovie from "@/layout/slider/SlideMovie.vue";
 export default {
   components: {
-    BannerMovie,
+    SlideMovie,
     ListActors,
     Swiper,
     SwiperSlide,
@@ -110,14 +110,17 @@ export default {
   },
   computed: {
     ...movies.moviesComputed,
+    ...auth.authComputed,
   },
   methods: {
     ...movies.moviesMethods,
+    ...auth.authMethods,
     async initial() {
       this.loading = true;
       await this.getMovieById(this.$route.params.movieId);
       await this.getActors(this.$route.params.movieId);
       await this.getVideo(this.$route.params.movieId)
+      await this.getCurrentUser()
       this.detail = this.filmDetail;
       this.videoLink = this.video
       this.loading = false;

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full movie-img">
+  <div class="w-full h-[80vh] relative movie-img">
     <img :src="`https://image.tmdb.org/t/p/original${image}`" alt="" />
     <div class="left-back h-full w-1/2 absolute top-0 left-0"></div>
     <div class="movie-wrapper w-full absolute left-0 top-0"></div>
@@ -19,9 +19,13 @@
     <div class="movie-detail my-4 w-1/3 text-gray-400 font-light">
       {{ overview }}
     </div>
-    <div v-if="getGenre" class="genres text-gray-400 my-4">
+    <div v-if="getGenre.length > 0" class="genres text-gray-400 my-4">
       Genres: <span class="text-white">{{ getGenre }}</span>
     </div>
+    <div v-else class="genres text-gray-400 my-4">
+      Genres: <span class="text-white">{{ genreFilm }}</span>
+    </div>
+    <div v-if="!!seasons">{{ seasons }} seasons</div>
     <div class="flex">
       <router-link
         :to="watchFilm"
@@ -79,7 +83,7 @@ import { mdiMinus } from "@mdi/js";
 import { mdiInformationVariant } from "@mdi/js";
 import { mdiThumbUp } from "@mdi/js";
 import { mdiThumbUpOutline } from "@mdi/js";
-import { ref, defineProps } from "vue";
+import { ref, defineProps, computed } from "vue";
 import { useStore } from "vuex";
 import useAddFilms from "@/composables/useFilmActions";
 import infoFilm from "@/composables/useFilmBanner";
@@ -92,11 +96,18 @@ const props = defineProps({
   release: String,
   genre: Array,
   type: String,
+  seasons: Number,
 });
 const store = useStore();
 const list = ref([...store.state.auth.auth.fullInfoUser.userList]);
 const like = ref([...store.state.auth.auth.fullInfoUser.ratedFilms]);
 
+const genreFilm = computed(() => {
+  const data = props.genre.map((item) => {
+    return item.name
+  })
+  return data.join(', ')
+})
 const {
   isMovieInList,
   isRatedFilm,
@@ -107,12 +118,11 @@ const {
   urlLink,
   watchFilm,
 } = useAddFilms(list, like, props.id, props.type);
-
 const { movieRate, movieRateColor, releaseDate, getGenre } = infoFilm(
   props.rate,
   props.release,
   props.genre
-);
+)
 </script>
 
 <style scoped>
@@ -126,6 +136,7 @@ img {
 .left-back {
   background: linear-gradient(90deg, #000 50%, transparent);
   display: block;
+  height: 80vh;
 }
 
 .movie-wrapper {

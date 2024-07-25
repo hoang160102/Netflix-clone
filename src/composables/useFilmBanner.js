@@ -2,7 +2,7 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 export default function infoFilm(rate, release, genre) {
   const store = useStore();
-  store.dispatch("movies/movies/getAllGerne");
+  store.dispatch("movies/movies/getAllGenre");
   const movieRate = computed(() => (rate * 10).toFixed(2));
   const movieRateColor = computed(() => {
     const percent = rate * 10;

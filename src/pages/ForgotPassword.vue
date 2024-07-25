@@ -34,23 +34,13 @@
   </section>
 </template>
 
-<script>
-import { auth } from '@/state/helpers'
-export default {
-  data() {
-    return {
-      email: ''
-    }
-  },
-  computed: {
-    ...auth.authComputed
-  },
-  methods: {
-    ...auth.authMethods,
-    async resetPass() {
-      await this.resetPassword(this.email)
-    }
-  }
+<script setup>
+import { ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+const email = ref("");
+const resetPass = () => {
+  store.dispatch('auth/auth/resetPassword', email.value)
 }
 </script>
 

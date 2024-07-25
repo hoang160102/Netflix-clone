@@ -52,12 +52,12 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination } from "swiper/modules";
 import { movies } from "@/state/helpers";
+import { auth } from "@/state/helpers";
 import SlideMovie from "@/layout/slider/SlideMovie.vue";
 import MovieList from "@/layout/layoutSlider/MovieList.vue";
 export default {
   data() {
     return {
-      genres: [],
       tvShows: [],
       topTvShows: [],
       loading: false,
@@ -76,14 +76,17 @@ export default {
   },
   computed: {
     ...movies.moviesComputed,
+    ...auth.authComputed,
   },
   methods: {
+    ...auth.authMethods,
     ...movies.moviesMethods,
     async initial() {
       this.loading = true;
       await this.getTvShows();
       await this.getBannerTvShow();
       await this.getGenreTvShows();
+      await this.getCurrentUser()
       this.tvShows = this.allTvShows;
       this.topTvShows = this.bannerTvShowPage;
       this.loading = false;
@@ -92,7 +95,7 @@ export default {
   async created() {
     await this.initial();
   },
-};
+};                                                                                                                                                                        
 </script>
 
 <style scoped>

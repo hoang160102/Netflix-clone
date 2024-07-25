@@ -2,10 +2,12 @@
     <iframe class="mx-3 my-3" allowfullscreen :src="`https://www.youtube.com/embed/${videoKey}`" frameborder="0"></iframe>
 </template>
 
-<script>
-export default {
-    props: ['video-key', 'id'],
-}
+<script setup>
+import { defineProps } from 'vue';
+defineProps({
+    videoKey: String,
+    id: String
+})
 </script>
 
 <style scoped>

@@ -30,38 +30,27 @@
   </main-content>
 </template>
 
-<script>
-import { movies } from "@/state/helpers";
+<script setup>
+// import { movies } from "@/state/helpers";
 import MovieList from "@/layout/layoutSlider/MovieList.vue";
-export default {
-  data() {
-    return {
-      commonMovies: [],
-      commonTv: [],
-      loading: false,
-    };
-  },
-  components: {
-    MovieList,
-  },
-  computed: {
-    ...movies.moviesComputed,
-  },
-  methods: {
-    ...movies.moviesMethods,
-    async initial() {
-      this.loading = true
-      await this.getPopularMovies();
-      await this.getPopularTvShows()
-      this.commonMovies = this.popularMovies;
-      this.commonTv = this.popularTvShows
-      this.loading = false
-    },
-  },
-  async created() {
-    await this.initial();
-  },
-};
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore()
+const commonMovies = ref([])
+const commonTv = ref([])
+const loading = ref(true)
+const initial = async () => {
+  await store.dispatch('movies/movies/getPopularMovies')
+  await store.dispatch('movies/movies/getPopularTvShows')
+  await store.dispatch('auth/auth/getCurrentUser')
+  commonMovies.value = store.state.movies.movies.popularMovies
+  commonTv.value = store.state.movies.movies.popularTvShows
+}
+onMounted(() => {
+  Promise.all([initial()]).then(() => {
+    loading.value = false
+  })
+})
 </script>
 
 <style scoped>

@@ -15,19 +15,25 @@
     </router-link>
 </template>
 
-<script>
-export default {
-  props: ["image", "id", "num", "name", "overview", 'season', 'seriesId', 'backdrop'],
-  computed: {
-    watchEpisode() {
-      return {
-        name: "Play TV Show",
-        params: { tvId: this.seriesId },
-        query: { season: this.season, ep: this.num}
-      };
-    },
-  },
-};
+<script setup>
+import { computed, defineProps } from 'vue';
+const props = defineProps({
+  image: String,
+  id: Number,
+  num: Number,
+  name: String,
+  overview: String,
+  season: Number,
+  seriesId: String,
+  backdrop: String
+})
+const watchEpisode = computed(() => {
+  return {
+    name: "Play TV Show",
+    params: { tvId: props.seriesId },
+    query: { season: props.season, ep: props.num}
+  }
+})
 </script>
 
 <style scoped>

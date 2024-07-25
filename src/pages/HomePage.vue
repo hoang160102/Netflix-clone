@@ -49,8 +49,6 @@
 <script>
 import SliderBanner from "@/layout/slider/SliderBanner.vue";
 import MovieSlider from "@/layout/layoutSlider/MovieSlider.vue";
-// import { auth } from "@/state/helpers";
-// import { movies } from "@/state/helpers";
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 export default {

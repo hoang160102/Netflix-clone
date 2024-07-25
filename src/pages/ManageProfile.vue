@@ -56,47 +56,40 @@
   </main-content>
 </template>
 
-<script>
-import { auth } from "@/state/helpers";
-export default {
-  data() {
-    return {
-      firstName: "",
-      lastName: "",
-      email: "",
-    };
-  },
-  computed: {
-    ...auth.authComputed,
-    isFormValid() {
-      return (
-        this.email.length > 1 &&
-        this.firstName.length >= 1 &&
-        this.lastName.length >= 1
-      );
-    },
-  },
-  methods: {
-    ...auth.authMethods,
-    async submitForm() {
-      if (this.isFormValid) {
-        await this.updateAccount({
-            firstName: this.firstName,
-            lastName: this.lastName
-        })
+<script setup>
+import { computed, ref, onMounted } from "vue";
+import { useStore } from "vuex";
+const store = useStore()
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const isFormValid = computed(() => {
+  return (
+    email.value.length > 1 &&
+    firstName.value.length >= 1 &&
+    lastName.value.length >= 1
+  );
+});
+
+const submitForm = async () => {
+      if (isFormValid.value) {
+        await store.dispatch('auth/auth/updateAccount',{
+          firstName: firstName.value,
+          lastName: lastName.value
+        });
       }
-    },
-    async initial() {
-      await this.getCurrentUser();
-      this.firstName = this.fullInfoUser.firstName;
-      this.lastName = this.fullInfoUser.lastName;
-      this.email = this.fullInfoUser.email;
-    },
-  },
-  async created() {
-    await this.initial();
-  },
+    };
+
+const initial = async () => {
+  await store.dispatch('auth/auth/getCurrentUser');
+  firstName.value = store.state.auth.auth.fullInfoUser.firstName;
+  lastName.value = store.state.auth.auth.fullInfoUser.lastName;
+  email.value = store.state.auth.auth.fullInfoUser.email;
 };
+
+onMounted(async () => {
+  await initial();
+});
 </script>
 
 <style scoped>

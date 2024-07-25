@@ -45,27 +45,17 @@
   </section>
 </template>
 
-<script>
-import { auth } from '@/state/helpers';
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-    }
-  },
-  computed: {
-    ...auth.authComputed,
-  },
-  methods: {
-    ...auth.authMethods,
-    loginUser() {
-      this.login({
-        email: this.email,
-        password: this.password
-      })
-    },
-  }
+<script setup>
+import { ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+const email = ref("");
+const password = ref("");
+const loginUser = () => {
+  store.dispatch('auth/auth/login', {
+    email: email.value,
+    password: password.value
+  })
 }
 </script>
 

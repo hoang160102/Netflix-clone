@@ -1,10 +1,7 @@
 <template>
   <main-content>
     <div class="loading pt-10 flex justify-center" v-if="loading">
-      <v-progress-circular
-      color="red"
-      indeterminate
-    ></v-progress-circular>
+      <v-progress-circular color="red" indeterminate></v-progress-circular>
     </div>
     <section v-else>
       <swiper
@@ -21,7 +18,7 @@
       >
         <swiper-slide
           class="relative"
-          v-for="movie in bannerMoviePage"
+          v-for="movie in bannerMovie"
           :key="movie.id"
         >
           <slide-movie
@@ -49,9 +46,10 @@
   </main-content>
 </template>
 
-<script>
-import { movies } from "@/state/helpers";
-import { Swiper, SwiperSlide } from "swiper/vue";
+<script setup>
+// import { movies } from "@/state/helpers";
+import { Swiper } from "swiper/vue";
+import { SwiperSlide } from "swiper/vue";
 
 // Import Swiper styles
 import "swiper/css";
@@ -62,57 +60,40 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination } from "swiper/modules";
 import SlideMovie from "@/layout/slider/SlideMovie.vue";
-import MovieCategory from "../layout/movie-page/MovieCategory.vue"
-export default {
-  data() {
+import MovieCategory from "../layout/movie-page/MovieCategory.vue";
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
+const store = useStore()
+const allGenres = ref([]);
+const allFilms = ref([]);
+const listFilms = ref([]);
+const bannerMovie = ref([])
+const loading = ref(true);
+const modules = [Autoplay, Pagination]
+const filterMovie = async () => {
+  const result = allGenres.value.map((el) => {
     return {
-      allGenres: [],
-      allFilms: [],
-      genreFilms: [],
-      listFilms: [],
-      loading: false
+      ...el,
+      movies: allFilms.value.filter((film) => {
+        return film.genre_ids.includes(el.id);
+      }),
     };
-  },
-  components: {
-    Swiper,
-    SwiperSlide,
-    SlideMovie,
-    MovieCategory
-  },
-  setup() {
-    return {
-      modules: [Autoplay, Pagination],
-    };
-  },
-  computed: {
-    ...movies.moviesComputed,
-  },
-  methods: {
-    ...movies.moviesMethods,
-    async filterMovie() {
-      const result = this.allGenres.map((el) => {
-        return {
-          ...el,
-          movies: this.allFilms.filter((film) => {
-            return film.genre_ids.includes(el.id)
-          })
-        }
-      })
-      this.listFilms =  result
-    },
-    async initial() {
-      this.loading = true
-      await this.getBannerMoviePage();
-      await this.getAllGerne();
-      await this.getAllMovies();
-      this.allGenres = this.genres;
-      this.allFilms = this.allMovies;
-      this.filterMovie()
-      this.loading = false
-    },
-  },
-  async created() {
-    await this.initial();
-  },
+  });
+  listFilms.value = result;
 };
+const initial = async () => {
+  await store.dispatch('movies/movies/getBannerMoviePage')
+  await store.dispatch('movies/movies/getAllGenre')
+  await store.dispatch(('movies/movies/getAllMovies'))
+  await store.dispatch('auth/auth/getCurrentUser')
+  allGenres.value = store.state.movies.movies.genres
+  allFilms.value = store.state.movies.movies.allMovies
+  bannerMovie.value = store.state.movies.movies.bannerMoviePage
+  filterMovie()
+}
+onMounted(() => {
+  Promise.all([initial()]).then(() => {
+    loading.value = false
+  })
+})
 </script>

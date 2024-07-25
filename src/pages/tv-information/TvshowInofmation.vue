@@ -4,8 +4,7 @@
       <v-progress-circular color="red" indeterminate></v-progress-circular>
     </div>
     <section v-else>
-      <banner-television
-        :detail="detail"
+      <slide-movie
         :id="detail.id"
         :image="detail.backdrop_path"
         :title="detail.name"
@@ -14,8 +13,8 @@
         :overview="detail.overview"
         :genre="detail.genres"
         :seasons="detail.number_of_seasons"
-        type="movie"
-      ></banner-television>
+        type="tv"
+      ></slide-movie>
       <div class="trailer mt-5 p-10">
         <div class="title font-semibold text-5xl mb-5 text-center text-white">
           Trailer
@@ -24,12 +23,12 @@
           v-if="videoLink.length > 0"
           class="video flex flex-wrap justify-center mx-auto"
         >
-          <television-trailer
+          <movie-trailer
             v-for="vid in videoLink"
             :key="vid.id"
             :id="vid.id"
             :video-key="vid.key"
-          ></television-trailer>
+          ></movie-trailer>
         </div>
         <div class="text-center text-slate-400" v-else>This film does not have any trailers</div>
       </div>
@@ -86,12 +85,12 @@
           class="mySwiper-slide"
         >
           <swiper-slide v-for="actor in actors" :key="actor.id">
-            <television-actors
+            <list-actors
               :id="actor.id"
               :profile="actor.profile_path"
               :name="actor.name"
               :cast-name="actor.character"
-            ></television-actors>
+            ></list-actors>
           </swiper-slide>
         </swiper>
         <div class="text-center text-slate-400" v-else>This film does not have data of actors</div>
@@ -108,17 +107,18 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { movies } from "@/state/helpers";
-import BannerTelevision from "./banner-tv/BannerTelevision.vue";
-import TelevisionActors from "./actors/TelevisionActors.vue";
-import TelevisionTrailer from "./tv-trailer/TelevisionTrailer.vue";
+import { auth } from "@/state/helpers";
+import SlideMovie from "@/layout/slider/SlideMovie.vue";
+import ListActors from "../information/actors/ListActors.vue";
+import MovieTrailer from "../information/trailer/MovieTrailer.vue";
 import TelevisionEpisodes from "./episodes/TelevisionEpisodes.vue"
 export default {
   components: {
-    BannerTelevision,
     Swiper,
     SwiperSlide,
-    TelevisionActors,
-    TelevisionTrailer,
+    ListActors,
+    MovieTrailer,
+    SlideMovie,
     TelevisionEpisodes
   },
   setup() {
@@ -183,12 +183,14 @@ export default {
   },
   computed: {
     ...movies.moviesComputed,
+    ...auth.authComputed,
     getSeriesId() {
       return this.$route.params.tvshowId
     },
   },
   methods: {
     ...movies.moviesMethods,
+    ...auth.authMethods,
     async fetchEpisodes() {
       await this.getEpisodes({
         id: this.$route.params.tvshowId,
@@ -201,6 +203,7 @@ export default {
       await this.getTvShowById(this.$route.params.tvshowId);
       await this.getTvActors(this.$route.params.tvshowId);
       await this.getTvVideo(this.$route.params.tvshowId);
+      await this.getCurrentUser()
       this.detail = this.filmDetail;
       this.videoLink = this.video;
       this.loading = false;
